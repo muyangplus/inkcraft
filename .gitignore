@@ -30,10 +30,10 @@ fonts/*.hwfont
 !fonts/lin_kaishu.hwfont
 !fonts/chen_xingshu.hwfont
 !fonts/su_engineering.hwfont
-cuda_font_kit/0[1-4]_*/
-cuda_font_kit/03_trajectories.json
-cuda_font_kit/output/
-cuda_font_kit/priors/graphics.txt
-cuda_font_kit/hwbuilder/
-cuda_font_kit/hwfont_sdk/
-cuda_font_kit/*.ipynb
+
+# Tooling dedicated to building one's own font (kept local, never committed)
+cuda_font_kit/
+scripts/scan_extract/
+scripts/build_personal_font.py
+scripts/sync_cuda_kit.py
+tests/unit/test_scan_extract_and_cuda_kit.py

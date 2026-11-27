@@ -177,7 +177,7 @@ sequenceDiagram
 | 几何 | numpy、shapely 2.x（多边形裁剪/剖面线）、scipy（样条、KD-Tree） | |
 | 数据 | SQLite（`.hwfont`、`app.db`）、文件系统（大对象） | |
 | 前端 | React 18 + TypeScript + Vite + Zustand + Canvas 2D（OffscreenCanvas/Worker） | 细节见 `ui_design.md` |
-| 打包 | `uv` 管理环境；`python -m handwrite` 启动并自动打开浏览器；可选 pywebview 壳 | |
+| 打包 | `uv` 管理环境；`python -m inkcraft` 启动并自动打开浏览器；可选 pywebview 壳 | |
 | 云端 | Colab（T4/L4/A100）、PyTorch 2.x、OpenCV、scikit-image | |
 
 ---
@@ -405,7 +405,7 @@ flowchart LR
     E -- box --> H["绘制单线方框占位"]
 ```
 
-- 内置回退字库（随程序发行，`backend/handwrite/writers/fallback/`）：
+- 内置回退字库（随程序发行，`backend/inkcraft/writers/fallback/`）：
   - `hershey_latin_greek_symbols.hwfont`：由公有领域 Hershey 单线字体转换，覆盖拉丁、希腊字母、数学运算符。
   - `std_kai_skeleton.hwfont`（可选）：标准楷体单线中轴骨架，仅在书写者缺字时兜底（需核验数据源授权，见 §20）。
 - 回退结果在 `GET /layouts/{id}` 的 `pages[].fallback_glyphs` 中汇总（`[{char,count}]`），UI 给出缺字警告。
@@ -453,7 +453,7 @@ flowchart TD
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://handwrite.local/schema/docir.v1.json",
+  "$id": "https://inkcraft.local/schema/docir.v1.json",
   "title": "DocIR",
   "type": "object",
   "required": ["doc_id", "source", "pages", "blocks"],
@@ -1036,7 +1036,7 @@ TaskState = Literal["pending", "running", "done", "failed"]
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://handwrite.local/schema/layout-config.v1.json",
+  "$id": "https://inkcraft.local/schema/layout-config.v1.json",
   "title": "LayoutConfig",
   "type": "object",
   "required": ["mode", "page", "text", "perturb", "formula", "chart", "table", "overlay", "optimize", "fallback"],
@@ -1547,7 +1547,7 @@ handwrite/
 │   ├── pyproject.toml
 │   └── handwrite/
 │       ├── __init__.py
-│       ├── __main__.py                  # `python -m handwrite` 启动入口
+│       ├── __main__.py                  # `python -m inkcraft` 启动入口
 │       ├── config.py                    # 路径、端口、MinerU 配置
 │       ├── api/
 │       │   ├── app.py                   # FastAPI 组装、CORS、静态托管前端 dist

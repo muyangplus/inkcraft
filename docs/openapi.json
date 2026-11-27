@@ -3,7 +3,7 @@
   "info": {
     "title": "Handwrite GRBL Writing Arm Host API",
     "description": "Standalone AI Multi-Writer Handwriting & GRBL Writing Arm Host System (Contract v1)",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -870,7 +870,301 @@
         }
       }
     },
+    "/api/v1/documents/preview": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Preview Document",
+        "description": "Quick pre-parse scan returning page thumbnails & auto-detected split sections.",
+        "operationId": "preview_document_api_v1_documents_preview_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_preview_document_api_v1_documents_preview_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Preview Document Api V1 Documents Preview Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/preview/{preview_id}/pages/{page_index}/thumb": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Get Preview Thumb",
+        "operationId": "get_preview_thumb_api_v1_documents_preview__preview_id__pages__page_index__thumb_get",
+        "parameters": [
+          {
+            "name": "preview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Preview Id"
+            }
+          },
+          {
+            "name": "page_index",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "title": "Page Index"
+            }
+          },
+          {
+            "name": "dpi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 72,
+              "default": 96,
+              "title": "Dpi"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/preview/{preview_id}/commit": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Commit Preview",
+        "operationId": "commit_preview_api_v1_documents_preview__preview_id__commit_post",
+        "parameters": [
+          {
+            "name": "preview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Preview Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommitImportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/preview/{preview_id}": {
+      "delete": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Cancel Preview",
+        "operationId": "cancel_preview_api_v1_documents_preview__preview_id__delete",
+        "parameters": [
+          {
+            "name": "preview_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Preview Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Cancel Preview Api V1 Documents Preview  Preview Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/documents/{doc_id}": {
+      "patch": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Rename Document",
+        "operationId": "rename_document_api_v1_documents__doc_id__patch",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenameDocumentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Rename Document Api V1 Documents  Doc Id  Patch"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Delete Document",
+        "operationId": "delete_document_api_v1_documents__doc_id__delete",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Delete Document Api V1 Documents  Doc Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "documents"
@@ -973,6 +1267,58 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Replace Document Blocks",
+        "operationId": "replace_document_blocks_api_v1_documents__doc_id__blocks_put",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentBlocksRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Replace Document Blocks Api V1 Documents  Doc Id  Blocks Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/documents/{doc_id}/pages/{page_index}/image": {
@@ -998,6 +1344,7 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "minimum": 0,
               "title": "Page Index"
             }
           }
@@ -1008,6 +1355,383 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{doc_id}/assets/{asset_name}": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Get Document Asset",
+        "operationId": "get_document_asset_api_v1_documents__doc_id__assets__asset_name__get",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          },
+          {
+            "name": "asset_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Asset Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{doc_id}/assets": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Upload Document Asset",
+        "operationId": "upload_document_asset_api_v1_documents__doc_id__assets_post",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_document_asset_api_v1_documents__doc_id__assets_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Upload Document Asset Api V1 Documents  Doc Id  Assets Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{doc_id}/markdown": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Get Document Markdown",
+        "operationId": "get_document_markdown_api_v1_documents__doc_id__markdown_get",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Download"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Document Markdown Api V1 Documents  Doc Id  Markdown Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Update Document Markdown",
+        "operationId": "update_document_markdown_api_v1_documents__doc_id__markdown_put",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentMarkdownRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Update Document Markdown Api V1 Documents  Doc Id  Markdown Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{doc_id}/blocks/{block_id}": {
+      "patch": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Patch Document Block",
+        "operationId": "patch_document_block_api_v1_documents__doc_id__blocks__block_id__patch",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          },
+          {
+            "name": "block_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Block Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchDocumentBlockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Patch Document Block Api V1 Documents  Doc Id  Blocks  Block Id  Patch"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{doc_id}/blocks/apply-image-style": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Apply Global Image Style",
+        "operationId": "apply_global_image_style_api_v1_documents__doc_id__blocks_apply_image_style_post",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyImageStyleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Apply Global Image Style Api V1 Documents  Doc Id  Blocks Apply Image Style Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{doc_id}/blocks/{block_id}/recognize-formula": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Re Recognize Formula Block",
+        "operationId": "re_recognize_formula_block_api_v1_documents__doc_id__blocks__block_id__recognize_formula_post",
+        "parameters": [
+          {
+            "name": "doc_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Doc Id"
+            }
+          },
+          {
+            "name": "block_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Block Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Re Recognize Formula Block Api V1 Documents  Doc Id  Blocks  Block Id  Recognize Formula Post"
+                }
               }
             }
           },
@@ -1052,6 +1776,102 @@
                   "type": "object",
                   "additionalProperties": true,
                   "title": "Response Get Layout Presets Api V1 Layout Presets Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/layout/presets/{preset_id}": {
+      "put": {
+        "tags": [
+          "layouts"
+        ],
+        "summary": "Save Layout Preset",
+        "operationId": "save_layout_preset_api_v1_layout_presets__preset_id__put",
+        "parameters": [
+          {
+            "name": "preset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Preset Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LayoutPreset"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Save Layout Preset Api V1 Layout Presets  Preset Id  Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "layouts"
+        ],
+        "summary": "Delete Layout Preset",
+        "operationId": "delete_layout_preset_api_v1_layout_presets__preset_id__delete",
+        "parameters": [
+          {
+            "name": "preset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Preset Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Delete Layout Preset Api V1 Layout Presets  Preset Id  Delete"
                 }
               }
             }
@@ -1226,6 +2046,7 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "minimum": 0,
               "title": "Page Index"
             }
           },
@@ -1289,6 +2110,7 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "minimum": 0,
               "title": "Page Index"
             }
           },
@@ -1315,6 +2137,50 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/math/preview": {
+      "post": {
+        "tags": [
+          "layouts"
+        ],
+        "summary": "Preview Math Latex",
+        "description": "Render live handwritten stroke preview for any LaTeX formula string.",
+        "operationId": "preview_math_latex_api_v1_math_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MathPreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Preview Math Latex Api V1 Math Preview Post"
+                }
               }
             }
           },
@@ -1649,6 +2515,181 @@
         }
       }
     },
+    "/api/v1/machine/goto-zero": {
+      "post": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Goto Zero Machine",
+        "operationId": "goto_zero_machine_api_v1_machine_goto_zero_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Goto Zero Machine Api V1 Machine Goto Zero Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/machine/move-to": {
+      "post": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Move To Machine",
+        "operationId": "move_to_machine_api_v1_machine_move_to_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveToRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Move To Machine Api V1 Machine Move To Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/machine/move-to-start": {
+      "post": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Move To Start Machine",
+        "operationId": "move_to_start_machine_api_v1_machine_move_to_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveToStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Move To Start Machine Api V1 Machine Move To Start Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/machine/home": {
+      "post": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Home Machine",
+        "operationId": "home_machine_api_v1_machine_home_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Home Machine Api V1 Machine Home Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/machine/raw": {
+      "post": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Raw Command Machine",
+        "operationId": "raw_command_machine_api_v1_machine_raw_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RawCommandRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Raw Command Machine Api V1 Machine Raw Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/machine/frame": {
       "post": {
         "tags": [
@@ -1731,6 +2772,117 @@
                   "additionalProperties": true,
                   "type": "object",
                   "title": "Response Estop Machine Api V1 Machine Estop Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/machine/grbl-settings": {
+      "get": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Get Grbl Settings",
+        "description": "Firmware `$$` values read at connect time, with names and profile checks.",
+        "operationId": "get_grbl_settings_api_v1_machine_grbl_settings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Grbl Settings Api V1 Machine Grbl Settings Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Write Grbl Settings",
+        "description": "Write firmware parameters (`$N=value`, stored in GRBL EEPROM) and re-read `$$`.",
+        "operationId": "write_grbl_settings_api_v1_machine_grbl_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrblSettingsWriteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Write Grbl Settings Api V1 Machine Grbl Settings Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/machine/macros/{index}/run": {
+      "post": {
+        "tags": [
+          "machine"
+        ],
+        "summary": "Run Machine Macro",
+        "description": "Run user macro #index (0-based) of the active profile.",
+        "operationId": "run_machine_macro_api_v1_machine_macros__index__run_post",
+        "parameters": [
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Index"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Run Machine Macro Api V1 Machine Macros  Index  Run Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -2071,6 +3223,28 @@
         ],
         "title": "ActiveWriterRequest"
       },
+      "ApplyImageStyleRequest": {
+        "properties": {
+          "image_render_mode": {
+            "type": "string",
+            "enum": [
+              "inherit",
+              "major_outline",
+              "outline",
+              "hatch",
+              "crosshatch",
+              "sketch",
+              "skip"
+            ],
+            "title": "Image Render Mode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "image_render_mode"
+        ],
+        "title": "ApplyImageStyleRequest"
+      },
       "Body_export_colab_bundle_api_v1_font_builder_colab_bundle_post": {
         "properties": {
           "files": {
@@ -2136,6 +3310,20 @@
         },
         "type": "object",
         "title": "Body_export_colab_bundle_api_v1_font_builder_colab_bundle_post"
+      },
+      "Body_preview_document_api_v1_documents_preview_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_preview_document_api_v1_documents_preview_post"
       },
       "Body_start_local_font_build_api_v1_font_builder_build_post": {
         "properties": {
@@ -2304,6 +3492,20 @@
         ],
         "title": "Body_upload_document_api_v1_documents_post"
       },
+      "Body_upload_document_asset_api_v1_documents__doc_id__assets_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_document_asset_api_v1_documents__doc_id__assets_post"
+      },
       "Body_upload_writer_api_v1_writers_post": {
         "properties": {
           "file": {
@@ -2320,6 +3522,26 @@
       },
       "ChartConfig": {
         "properties": {
+          "image_render_mode": {
+            "type": "string",
+            "enum": [
+              "major_outline",
+              "outline",
+              "hatch",
+              "crosshatch",
+              "sketch",
+              "skip"
+            ],
+            "title": "Image Render Mode",
+            "default": "outline"
+          },
+          "contour_threshold": {
+            "type": "integer",
+            "maximum": 240.0,
+            "minimum": 60.0,
+            "title": "Contour Threshold",
+            "default": 185
+          },
           "hatch_spacing_mm": {
             "type": "number",
             "maximum": 5.0,
@@ -2350,10 +3572,81 @@
             "minimum": 0.0,
             "title": "Hand Jitter Mm",
             "default": 0.25
+          },
+          "keep_caption_with_figure": {
+            "type": "boolean",
+            "title": "Keep Caption With Figure",
+            "default": true
           }
         },
         "type": "object",
         "title": "ChartConfig"
+      },
+      "CommitImportProjectSpec": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "page_indices": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Page Indices"
+          },
+          "crop_rects_mm": {
+            "additionalProperties": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Crop Rects Mm"
+          },
+          "exclude_header_footer": {
+            "type": "boolean",
+            "title": "Exclude Header Footer",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "page_indices"
+        ],
+        "title": "CommitImportProjectSpec"
+      },
+      "CommitImportRequest": {
+        "properties": {
+          "mode_hint": {
+            "type": "string",
+            "enum": [
+              "reflow",
+              "overlay"
+            ],
+            "title": "Mode Hint",
+            "default": "reflow"
+          },
+          "projects": {
+            "items": {
+              "$ref": "#/components/schemas/CommitImportProjectSpec"
+            },
+            "type": "array",
+            "maxItems": 24,
+            "minItems": 1,
+            "title": "Projects"
+          }
+        },
+        "type": "object",
+        "required": [
+          "projects"
+        ],
+        "title": "CommitImportRequest"
       },
       "CreateJobRequest": {
         "properties": {
@@ -2545,6 +3838,23 @@
         "type": "object",
         "title": "GenerateSheetsRequest"
       },
+      "GrblSettingsWriteRequest": {
+        "properties": {
+          "settings": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Settings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "settings"
+        ],
+        "title": "GrblSettingsWriteRequest",
+        "description": "Firmware parameters to write, e.g. ``{\"$100\": 80, \"$32\": 0}``."
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2568,6 +3878,11 @@
           "dy": {
             "type": "number",
             "title": "Dy",
+            "default": 0.0
+          },
+          "dz": {
+            "type": "number",
+            "title": "Dz",
             "default": 0.0
           },
           "feed": {
@@ -2637,10 +3952,63 @@
             },
             "type": "array",
             "title": "Regions"
+          },
+          "writer_mix": {
+            "items": {
+              "$ref": "#/components/schemas/WriterMixEntry"
+            },
+            "type": "array",
+            "title": "Writer Mix"
           }
         },
         "type": "object",
         "title": "LayoutConfig"
+      },
+      "LayoutPreset": {
+        "properties": {
+          "preset_id": {
+            "type": "string",
+            "title": "Preset Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "homework",
+              "notes",
+              "letter",
+              "overlay",
+              "draft"
+            ],
+            "title": "Category",
+            "default": "homework"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          },
+          "config": {
+            "$ref": "#/components/schemas/LayoutConfig"
+          }
+        },
+        "type": "object",
+        "required": [
+          "preset_id",
+          "name",
+          "description",
+          "config"
+        ],
+        "title": "LayoutPreset"
       },
       "MachineConnectRequest": {
         "properties": {
@@ -2668,6 +4036,24 @@
         "type": "object",
         "title": "MachineConnectRequest"
       },
+      "MachineMacro": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 24,
+            "title": "Name",
+            "default": "宏"
+          },
+          "gcode": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Gcode",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "MachineMacro"
+      },
       "MachineProfile": {
         "properties": {
           "profile_id": {
@@ -2679,6 +4065,11 @@
             "type": "string",
             "title": "Name",
             "default": "CoreXY A4 舵机写字机 (GRBL 1.1)"
+          },
+          "port": {
+            "type": "string",
+            "title": "Port",
+            "default": "auto"
           },
           "baud": {
             "type": "integer",
@@ -2701,10 +4092,37 @@
             "type": "string",
             "enum": [
               "top_left",
-              "bottom_left"
+              "top_right",
+              "bottom_left",
+              "bottom_right"
             ],
             "title": "Origin",
             "default": "top_left"
+          },
+          "x_axis": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "right",
+              "left"
+            ],
+            "title": "X Axis",
+            "default": "auto"
+          },
+          "y_axis": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "down",
+              "up"
+            ],
+            "title": "Y Axis",
+            "default": "auto"
+          },
+          "swap_xy": {
+            "type": "boolean",
+            "title": "Swap Xy",
+            "default": false
           },
           "invert_x": {
             "type": "boolean",
@@ -2715,6 +4133,16 @@
             "type": "boolean",
             "title": "Invert Y",
             "default": false
+          },
+          "offset_mm": {
+            "$ref": "#/components/schemas/Vec2"
+          },
+          "rotation_deg": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Rotation Deg",
+            "default": 0.0
           },
           "feed_draw": {
             "type": "number",
@@ -2731,6 +4159,13 @@
             "title": "Jog Feed",
             "default": 3000.0
           },
+          "z_jog_step_mm": {
+            "type": "number",
+            "maximum": 50.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Z Jog Step Mm",
+            "default": 1.0
+          },
           "status_hz": {
             "type": "number",
             "title": "Status Hz",
@@ -2740,10 +4175,60 @@
             "type": "integer",
             "title": "Rx Buffer",
             "default": 128
+          },
+          "stream_mode": {
+            "type": "string",
+            "enum": [
+              "char_count",
+              "line"
+            ],
+            "title": "Stream Mode",
+            "default": "char_count"
+          },
+          "auto_zero_on_start": {
+            "type": "boolean",
+            "title": "Auto Zero On Start",
+            "default": false
+          },
+          "sleep_after_job": {
+            "type": "boolean",
+            "title": "Sleep After Job",
+            "default": false
+          },
+          "legacy_grbl": {
+            "type": "boolean",
+            "title": "Legacy Grbl",
+            "default": false
+          },
+          "start_gcode": {
+            "type": "string",
+            "title": "Start Gcode",
+            "default": ""
+          },
+          "end_gcode": {
+            "type": "string",
+            "title": "End Gcode",
+            "default": ""
+          },
+          "macros": {
+            "items": {
+              "$ref": "#/components/schemas/MachineMacro"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "title": "Macros"
+          },
+          "grbl_expected": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Grbl Expected"
           }
         },
         "type": "object",
-        "title": "MachineProfile"
+        "title": "MachineProfile",
+        "description": "Physical machine description.\n\nCoordinate model (see ``inkcraft.machine.geometry``): layouts are produced in\n*page space* (mm, origin at the paper's top-left corner, +y towards the bottom\nof the paper).  ``origin`` names the paper corner that coincides with the GRBL\nwork zero; ``x_axis`` / ``y_axis`` give the paper direction in which the\nmachine's +X / +Y move.  ``\"auto\"`` keeps the legacy behaviour where all work\ncoordinates stay positive.  Example: 奎享雕刻-style \"左上\" machines use\n``origin=\"top_left\", y_axis=\"up\"`` (writing down the page = negative Y).\n``rotation_deg`` rotates the drawing about the page centre (paper skew)."
       },
       "MarginsMM": {
         "properties": {
@@ -2774,6 +4259,109 @@
         },
         "type": "object",
         "title": "MarginsMM"
+      },
+      "MathPreviewRequest": {
+        "properties": {
+          "latex": {
+            "type": "string",
+            "title": "Latex"
+          },
+          "writer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Writer Id"
+          },
+          "font_size_mm": {
+            "type": "number",
+            "maximum": 30.0,
+            "minimum": 2.0,
+            "title": "Font Size Mm",
+            "default": 7.5
+          },
+          "formula_scale": {
+            "type": "number",
+            "maximum": 1.4,
+            "minimum": 0.6,
+            "title": "Formula Scale",
+            "default": 0.95
+          },
+          "inner_row_spacing": {
+            "type": "number",
+            "maximum": 0.5,
+            "minimum": -0.35,
+            "title": "Inner Row Spacing",
+            "default": -0.04
+          },
+          "display": {
+            "type": "boolean",
+            "title": "Display",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "latex"
+        ],
+        "title": "MathPreviewRequest"
+      },
+      "MoveToRequest": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X",
+            "default": 0.0
+          },
+          "y": {
+            "type": "number",
+            "title": "Y",
+            "default": 0.0
+          },
+          "feed": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 20000.0,
+                "minimum": 60.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feed"
+          },
+          "pen_up": {
+            "type": "boolean",
+            "title": "Pen Up",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "MoveToRequest"
+      },
+      "MoveToStartRequest": {
+        "properties": {
+          "layout_id": {
+            "type": "string",
+            "title": "Layout Id"
+          },
+          "page_index": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Page Index",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "layout_id"
+        ],
+        "title": "MoveToStartRequest"
       },
       "OptimizeConfig": {
         "properties": {
@@ -2895,6 +4483,16 @@
           "margins_mm": {
             "$ref": "#/components/schemas/MarginsMM"
           },
+          "underlay_fit": {
+            "type": "string",
+            "enum": [
+              "fill",
+              "contain",
+              "custom"
+            ],
+            "title": "Underlay Fit",
+            "default": "fill"
+          },
           "underlay_width_mm": {
             "anyOf": [
               {
@@ -3002,14 +4600,40 @@
             "anyOf": [
               {
                 "type": "number",
-                "maximum": 3.5,
-                "minimum": 0.8
+                "maximum": 8.0,
+                "minimum": -2.0
               },
               {
                 "type": "null"
               }
             ],
             "title": "Line Spacing"
+          },
+          "line_spacing_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 80.0,
+                "minimum": -20.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line Spacing Mm"
+          },
+          "paragraph_spacing_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 80.0,
+                "minimum": -20.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paragraph Spacing Mm"
           },
           "ruled": {
             "anyOf": [
@@ -3077,13 +4701,246 @@
         ],
         "title": "PaperReadyRequest"
       },
+      "PatchDocumentBlockRequest": {
+        "properties": {
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          },
+          "level": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 6.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level"
+          },
+          "page_index": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Index"
+          },
+          "inlines": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inlines"
+          },
+          "latex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latex"
+          },
+          "table": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Table"
+          },
+          "table_border_style": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "inherit",
+                  "grid",
+                  "compact",
+                  "three_line",
+                  "horizontal",
+                  "dashed",
+                  "minimal",
+                  "none"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Table Border Style"
+          },
+          "table_width_ratio": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.4
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Table Width Ratio"
+          },
+          "table_align": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Table Align"
+          },
+          "alt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alt Text"
+          },
+          "image_render_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "inherit",
+                  "major_outline",
+                  "outline",
+                  "hatch",
+                  "crosshatch",
+                  "sketch",
+                  "skip"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Render Mode"
+          },
+          "placement": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "inline",
+                  "float"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Placement"
+          },
+          "image_align": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Align"
+          },
+          "image_width_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 500.0,
+                "minimum": 5.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Width Mm"
+          },
+          "image_height_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 500.0,
+                "minimum": 5.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Height Mm"
+          },
+          "float_box_mm": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Float Box Mm"
+          }
+        },
+        "type": "object",
+        "title": "PatchDocumentBlockRequest"
+      },
       "PenConfig": {
         "properties": {
           "mode": {
             "type": "string",
             "enum": [
               "servo",
-              "z"
+              "z",
+              "laser"
             ],
             "title": "Mode",
             "default": "servo"
@@ -3105,6 +4962,20 @@
             "title": "Dwell Ms",
             "default": 120
           },
+          "down_delay_ms": {
+            "type": "integer",
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Down Delay Ms",
+            "default": 0
+          },
+          "up_delay_ms": {
+            "type": "integer",
+            "maximum": 5000.0,
+            "minimum": 0.0,
+            "title": "Up Delay Ms",
+            "default": 0
+          },
           "z_up_mm": {
             "type": "number",
             "title": "Z Up Mm",
@@ -3119,10 +4990,18 @@
             "type": "number",
             "title": "Z Feed",
             "default": 1200.0
+          },
+          "laser_power": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 0.0,
+            "title": "Laser Power",
+            "default": 1000
           }
         },
         "type": "object",
-        "title": "PenConfig"
+        "title": "PenConfig",
+        "description": "Pen actuator.\n\n* ``servo``  – custom spindle commands (default ``M5`` up / ``M3 S90`` down)\n* ``z``      – stepper Z axis (``G0 Z<up>`` / ``G1 Z<down> F<z_feed>``)\n* ``laser``  – laser/PWM tool (``M5`` off / ``M3 S<laser_power>`` on)\n\nTiming follows the usual writing-machine convention: ``dwell_ms`` lets the\nactuator settle after every up/down move, ``down_delay_ms`` pauses after the\npen touches the paper (ink start) and ``up_delay_ms`` pauses before lifting."
       },
       "PenRequest": {
         "properties": {
@@ -3133,6 +5012,44 @@
               "down"
             ],
             "title": "State"
+          },
+          "override_cmd": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Cmd"
+          },
+          "override_z_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 50.0,
+                "minimum": -30.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Z Mm"
+          },
+          "override_z_feed": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 10000.0,
+                "minimum": 60.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Z Feed"
           }
         },
         "type": "object",
@@ -3220,6 +5137,36 @@
         "type": "object",
         "title": "PerturbConfig"
       },
+      "RawCommandRequest": {
+        "properties": {
+          "command": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Command"
+          }
+        },
+        "type": "object",
+        "required": [
+          "command"
+        ],
+        "title": "RawCommandRequest"
+      },
+      "RenameDocumentRequest": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Filename"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename"
+        ],
+        "title": "RenameDocumentRequest"
+      },
       "RuledConfig": {
         "properties": {
           "style": {
@@ -3255,12 +5202,69 @@
             "title": "Draw Borders",
             "default": true
           },
+          "border_style": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "compact",
+              "three_line",
+              "horizontal",
+              "dashed",
+              "minimal",
+              "none"
+            ],
+            "title": "Border Style",
+            "default": "grid"
+          },
+          "width_ratio": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.4,
+            "title": "Width Ratio",
+            "default": 1.0
+          },
+          "cell_padding_mm": {
+            "type": "number",
+            "maximum": 5.0,
+            "minimum": 0.3,
+            "title": "Cell Padding Mm",
+            "default": 1.4
+          },
+          "row_height_scale": {
+            "type": "number",
+            "maximum": 1.6,
+            "minimum": 0.55,
+            "title": "Row Height Scale",
+            "default": 1.0
+          },
+          "font_scale": {
+            "type": "number",
+            "maximum": 1.15,
+            "minimum": 0.55,
+            "title": "Font Scale",
+            "default": 0.86
+          },
+          "align": {
+            "type": "string",
+            "enum": [
+              "left",
+              "center",
+              "right"
+            ],
+            "title": "Align",
+            "default": "center"
+          },
           "hand_jitter_mm": {
             "type": "number",
             "maximum": 1.0,
             "minimum": 0.0,
             "title": "Hand Jitter Mm",
             "default": 0.2
+          },
+          "keep_caption_with_table": {
+            "type": "boolean",
+            "title": "Keep Caption With Table",
+            "default": true
           }
         },
         "type": "object",
@@ -3291,10 +5295,23 @@
           },
           "line_spacing": {
             "type": "number",
-            "maximum": 3.5,
-            "minimum": 0.8,
+            "maximum": 8.0,
+            "minimum": -2.0,
             "title": "Line Spacing",
             "default": 1.5
+          },
+          "line_spacing_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 80.0,
+                "minimum": -20.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line Spacing Mm"
           },
           "char_spacing": {
             "type": "number",
@@ -3305,8 +5322,8 @@
           },
           "paragraph_spacing_mm": {
             "type": "number",
-            "maximum": 30.0,
-            "minimum": 0.0,
+            "maximum": 80.0,
+            "minimum": -20.0,
             "title": "Paragraph Spacing Mm",
             "default": 3.0
           },
@@ -3334,6 +5351,36 @@
         },
         "type": "object",
         "title": "TextConfig"
+      },
+      "UpdateDocumentBlocksRequest": {
+        "properties": {
+          "blocks": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Blocks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "blocks"
+        ],
+        "title": "UpdateDocumentBlocksRequest"
+      },
+      "UpdateDocumentMarkdownRequest": {
+        "properties": {
+          "markdown": {
+            "type": "string",
+            "title": "Markdown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "markdown"
+        ],
+        "title": "UpdateDocumentMarkdownRequest"
       },
       "ValidationError": {
         "properties": {
@@ -3390,6 +5437,27 @@
         },
         "type": "object",
         "title": "Vec2"
+      },
+      "WriterMixEntry": {
+        "properties": {
+          "writer_id": {
+            "type": "string",
+            "title": "Writer Id"
+          },
+          "weight": {
+            "type": "number",
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Weight",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "writer_id"
+        ],
+        "title": "WriterMixEntry",
+        "description": "One writer in a probability mix (奎享雕刻 \"字体混合\" equivalent)."
       },
       "WritingRegion": {
         "properties": {
@@ -3476,14 +5544,40 @@
             "anyOf": [
               {
                 "type": "number",
-                "maximum": 3.5,
-                "minimum": 0.8
+                "maximum": 8.0,
+                "minimum": -2.0
               },
               {
                 "type": "null"
               }
             ],
             "title": "Line Spacing"
+          },
+          "line_spacing_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 80.0,
+                "minimum": -20.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line Spacing Mm"
+          },
+          "paragraph_spacing_mm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 80.0,
+                "minimum": -20.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paragraph Spacing Mm"
           },
           "char_spacing": {
             "anyOf": [

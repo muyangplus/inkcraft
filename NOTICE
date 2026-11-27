@@ -1,0 +1,8 @@
+墨迹工坊 InkCraft
+Copyright 2026 muyangplus
+
+本产品依据 Apache License 2.0 授权发布，完整条款见 LICENSE 文件。
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+“奎享雕刻”为其权利人的商标。本项目独立实现了与其写字机控制方式兼容的 GRBL 控制方案，
+不包含、不分发、也不依赖奎享雕刻软件或其任何组件与字体。

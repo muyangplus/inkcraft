@@ -1,4 +1,16 @@
-# 独立 AI 多人笔迹与 GRBL 写字机械臂上位机系统（Handwrite Studio）
+# 墨迹工坊 InkCraft —— AI 多人笔迹与 GRBL 写字机上位机系统
+
+<p align="left">
+  <a href="https://github.com/muyangplus/inkcraft"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-muyangplus%2Finkcraft-181717?logo=github&logoColor=white"></a>
+  <a href="https://github.com/muyangplus/inkcraft/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/muyangplus/inkcraft?logo=github&style=flat"></a>
+  <a href="https://github.com/muyangplus/inkcraft/issues"><img alt="Issues" src="https://img.shields.io/github/issues/muyangplus/inkcraft?logo=github"></a>
+  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/License-Apache--2.0-blue.svg"></a>
+  <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
+  <img alt="Node 20+" src="https://img.shields.io/badge/Node.js-20%2B-339933?logo=nodedotjs&logoColor=white">
+  <img alt="React 18" src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white">
+  <img alt="GRBL 1.1" src="https://img.shields.io/badge/GRBL-1.1-orange">
+</p>
 
 > **完全自主可控的本地桌面级写字机械臂排版与控制系统** —— 摆脱闭源商业软件与 `.gfont` 限制，打通「Google Colab 离线纸面扫描建模 → 开放 `.hwfont` 单文件笔迹热插拔 → DOCX/PDF（含数学公式、表格、数据图表）单线矢量排版 → GRBL 1.1 安全流式写字」全链路闭环。
 
@@ -19,6 +31,11 @@
   - 高性能分页矢量预览（`Float32Array` 零拷贝路径流）、空移路径显示、**Frame Check 外框边界试跑**。
   - 键盘点动（`$J=`）、工作坐标置零（`G92 X0 Y0`）、**实时暂停 → 换笔 → 原位续写**、多页换纸暂停提示、**< 30 ms 带抬笔急停（E-Stop）**、断点续写。
   - 内置 **`MockGrbl` 物理仿真器**：无硬件串口即可完整联调与自动化测试。
+- **原生兼容奎享雕刻式 GRBL 写字机**（详见 [docs/machine_control.md](docs/machine_control.md)）
+  - 步进 Z / 舵机 / 激光三种笔控，落笔后与抬笔前暂停、开始时自动置零、完成后休眠、单步发送、自定义起止代码与宏。
+  - 通用坐标系（四角原点 / 机器轴向 / XY 互换 / 偏移 / 旋转），支持「左上原点、向下为 -Y」的机器；点动按纸面方向。
+  - 串口自动识别（优先 CH340），不依赖固定 COM 号；连接时读取 `$$`，可在界面修改固件参数，`$13=1` 英寸上报自动换算；兼容 GRBL 0.9。
+  - 多字体按概率混写，TXT 自动识别 GBK 编码。
 - **双模式 AI 字体构建器（本机离线 GPU/CPU + Google Colab 云端）**
   - 系统内置 **本机离线构建** 与 **Google Colab 云端构建** 自由切换，仅需书写者 1–4 页静态 A4 纸面手写扫描件即可完成 ArUco 矫正、青/红网格滤除、TPS 笔顺恢复、少样本多异形生成与质检门禁，导出标准 `.hwfont` 并自动热插拔启用。
 
@@ -47,19 +64,22 @@ flowchart LR
 ### 目录结构
 
 ```text
-handwrite/
+inkcraft/
 ├── packages/hwfont_sdk/     # 前后端与 Colab 共享的 .hwfont 编解码与校验 SDK
-├── backend/                 # FastAPI 后端、文档解析、排版/公式/图表、G-code、GRBL 控制
+├── backend/inkcraft/        # FastAPI 后端：api / core / docparse / layout / writers / gcode / grbl / machine
 ├── frontend/                # React 18 + TypeScript + Vite + Zustand + Canvas 2D 工作台
 ├── colab_builder/           # Google Colab 离线扫描切片、骨架笔顺恢复、SDT-LoRA 与 Notebooks
 │   ├── hwbuilder/           # sheet_gen / segment / skeleton_align / model_sdt / qc_export
 │   └── notebooks/           # 01_generate_sheets / 02_scan_to_trajectories / 03_train_and_export
-├── config/                  # 默认机器配置 (default_profiles.json) 与 MinerU 显存配置模板
+├── config/                  # 内置机台档案 (default_profiles.json)、稿纸预设 (presets/) 与 MinerU 配置模板
 ├── fonts/                   # 预置演示 .hwfont 笔迹库
 ├── scripts/                 # OpenAPI 导出、演示字库生成、RTX 4070 Super MinerU 显存压测
-├── docs/                    # 架构蓝图 (framework_architecture.md) 与 UI 设计规范 (ui_design.md)
+├── windows/                 # Windows 一键安装 / 启动脚本
+├── docs/                    # 功能梳理 (FEATURES.md)、写字机控制方案 (machine_control.md)、架构与 UI 规范
 └── tests/                   # 单元测试、确定性回归与 MockGrbl 集成测试
 ```
+
+> `source/`（第三方软件、授权文件、手稿扫描件等本地素材）、`data/`、`dist/`、`.env` 不纳入版本库。
 
 ---
 
@@ -112,9 +132,9 @@ uv run python scripts/generate_demo_writers.py
 构建好 `frontend/dist` 后，直接执行：
 
 ```bash
-uv run python -m handwrite
+uv run python -m inkcraft
 # 或在激活 .venv 后执行：
-python -m handwrite
+python -m inkcraft
 ```
 
 默认监听 `http://127.0.0.1:8765`，启动后将自动提供前后端服务（含内置 `MockGrbl` 仿真串口，无需连接真实机械臂即可体验完整上传、重排/套打、外框试跑与流式写字）。
@@ -123,7 +143,7 @@ python -m handwrite
 
 ```bash
 # 终端 1：启动 FastAPI 后端
-uv run uvicorn handwrite.api.app:create_app --factory --reload --host 127.0.0.1 --port 8765
+uv run uvicorn inkcraft.api.app:create_app --factory --reload --host 127.0.0.1 --port 8765
 
 # 终端 2：启动 Vite 前端（默认代理 /api 与 /ws 到 8765）
 cd frontend && npm run dev
@@ -163,7 +183,7 @@ MINERU_VIRTUAL_VRAM_SIZE=8          # 限制单批显存上限，目标峰值 <=
 MINERU_MODEL_SOURCE=local           # 纯离线运行
 MINERU_CHUNK_PAGES=10               # PyMuPDF 每 10 页分块串行送入子进程，单块 OOM 自动拆半重试或降级 CPU
 MINERU_MAX_DPI=200
-HANDWRITE_MINERU_PYTHON=/path/to/handwrite/runtime/mineru-venv/bin/python
+INKCRAFT_MINERU_PYTHON=/path/to/inkcraft/runtime/mineru-venv/bin/python
 ```
 
 ### 3. 12GB 显存峰值压测验收
@@ -182,8 +202,9 @@ uv run python scripts/bench_mineru_vram.py \
 
 ## GRBL 硬件接线与安全操作规范
 
-支持标准 **GRBL 1.1** USB 虚拟串口固件（波特率默认 `115200`），内置两套预置配置见 [config/default_profiles.json](config/default_profiles.json)：
+支持标准 **GRBL 1.1** USB 虚拟串口固件（波特率默认 `115200`），内置预置配置见 [config/default_profiles.json](config/default_profiles.json)。串口默认「自动识别」，连接时自动读取 `$$` 并校验关键参数。
 
+0. **`kx_grbl_stepper_z` / `kx_grbl_laser`（奎享兼容控制方案）**：步进 Z（Z0 抬笔 / Z2 落笔）或激光笔控，左上原点、向下书写为 -Y，落笔后与抬笔前各停 0.2 s，开始时自动置零，详见 [docs/machine_control.md](docs/machine_control.md)。步进 Z 笔控下 `$32=1` 不影响书写。
 1. **`corexy_servo_a4`（舵机抬笔模式）**
    - **硬件 Fail-Safe 强约定**：接线与固件必须满足 **`M5`（主轴停止 / PWM=0）= 抬笔**，**`M3 S90` = 落笔**。确保上电、报警（Alarm）或软复位（`0x18`）瞬间笔尖自动抬起，绝不压断笔尖或拖黑纸面。
    - **禁止激光模式**：连接前务必确认 GRBL 参数 **`$32=0`**（否则 `G0` 空移期间主轴 PWM 行为会干扰舵机角度）。
@@ -237,7 +258,7 @@ uv run python -m hwbuilder build \
 
 若本机无 PyTorch CUDA 或希望借助 Colab 免费 T4 / L4 / A100 GPU 跑完整 GB2312 全字库微调：
 
-- **方式 1（Web 一键打包）**：在 **`+ 构建新笔迹`** 弹窗切换到 **Google Colab 云端构建**，上传扫描件后点击 **「打包下载 Colab 云端任务包 (.zip)」**（调用 `POST /api/v1/font-builder/colab-bundle`），自动将 3 份 Notebook、`hwbuilder` + `hwfont_sdk` 源码、配置文件、`manifest.json` 与扫描件打包为 `handwrite_colab_bundle.zip`。
+- **方式 1（Web 一键打包）**：在 **`+ 构建新笔迹`** 弹窗切换到 **Google Colab 云端构建**，上传扫描件后点击 **「打包下载 Colab 云端任务包 (.zip)」**（调用 `POST /api/v1/font-builder/colab-bundle`），自动将 3 份 Notebook、`hwbuilder` + `hwfont_sdk` 源码、配置文件、`manifest.json` 与扫描件打包为 `inkcraft_colab_bundle.zip`。
 - **方式 2（直接运行 Notebook）**：解压上传至 Google Drive 后在 Colab 依次运行：
   1. **[`01_generate_sheets.ipynb`](colab_builder/notebooks/01_generate_sheets.ipynb)** — 生成带 4 角 `DICT_4X4_50` ArUco 定位码与淡青/淡红色可滤除格线的 A4 PDF 与 `manifest.json`（彩色 100% 打印，0.5–0.7 mm 黑色中性笔书写，300–600 DPI 彩色扫描）。
   2. **[`02_scan_to_trajectories.ipynb`](colab_builder/notebooks/02_scan_to_trajectories.ipynb)** — 透视矫正、光照归一化、去网格切片、导出交互式 **`review.html`** 人工复核（可导出 `kept_ids.json`），再执行 Zhang-Suen 细化 + 标准笔顺先验（MakeMeAHanzi / Hershey）**TPS 非刚性配准**。
@@ -269,3 +290,34 @@ cd frontend && npm run typecheck && npm run build
 - 系统框架与架构蓝图：[docs/framework_architecture.md](docs/framework_architecture.md)
 - UI/UX 交互设计规范：[docs/ui_design.md](docs/ui_design.md)
 - 静态可交互视觉原型：[docs/ui_prototype.html](docs/ui_prototype.html)
+- 功能梳理：[docs/FEATURES.md](docs/FEATURES.md)
+- 写字机控制方案（兼容奎享雕刻式 GRBL 写字机）：[docs/machine_control.md](docs/machine_control.md)
+
+---
+
+## 参与贡献（Contributing）
+
+欢迎提交 Issue 与 Pull Request！开发环境搭建、提交前检查（`pytest`、OpenAPI 同步、前端类型检查）、
+代码约定与提交规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+1. Fork 本仓库并新建分支：`git checkout -b feat/your-feature`
+2. 提交改动并确保测试通过：`uv run pytest`
+3. 推送分支并发起 Pull Request，描述改动内容与测试方式
+
+## 安全（Security）
+
+发现安全漏洞请**不要**公开提交 Issue，请通过
+[GitHub 私密漏洞报告](https://github.com/muyangplus/inkcraft/security/advisories/new) 联系维护者，
+详见 [SECURITY.md](SECURITY.md)。服务默认只监听 `127.0.0.1`，请勿暴露到公网。
+
+## 许可证（License）
+
+本项目基于 [Apache License 2.0](LICENSE) 开源，版权声明见 [NOTICE](NOTICE)。
+
+“奎享雕刻”为其权利人的商标；本项目独立实现兼容的 GRBL 控制方案，不包含、不分发、也不依赖其软件、组件或字体。
+
+## 作者
+
+**muyangplus** · [GitHub @muyangplus](https://github.com/muyangplus)
+
+Copyright © 2026 muyangplus
