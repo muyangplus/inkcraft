@@ -123,7 +123,7 @@ export const PaperChangeModal: React.FC = () => {
                 }}
               >
                 <div>
-                  机械臂已自动<strong>抬笔并回停靠位</strong>。
+                  写字机已自动<strong>抬笔并回停靠位</strong>。
                   {doneStats && (
                     <span className="mono" style={{ color: 'var(--text-muted)', marginLeft: 6 }}>
                       (本页实绘 {(doneStats.draw_mm / 1000).toFixed(2)}m)

@@ -42,6 +42,8 @@ export const JogControlPad: React.FC = () => {
   const busyAction = useMachineStore((s) => s.busyAction);
   const setJogStepMm = useMachineStore((s) => s.setJogStepMm);
   const jog = useMachineStore((s) => s.jog);
+  const jogZ = useMachineStore((s) => s.jogZ);
+  const runMacro = useMachineStore((s) => s.runMacro);
   const cancelJog = useMachineStore((s) => s.cancelJog);
   const zeroXY = useMachineStore((s) => s.zeroXY);
   const gotoZero = useMachineStore((s) => s.gotoZero);
@@ -145,7 +147,7 @@ export const JogControlPad: React.FC = () => {
                 disabled={!canJog}
                 title={
                   canJog
-                    ? `点动 ΔX=${d.dx * jogStepMm}mm ΔY=${d.dy * jogStepMm}mm`
+                    ? `按纸面方向点动 ${jogStepMm}mm（→ 向右，↓ 向纸张下方）`
                     : `当前状态 (${machineState}) 禁止点动`
                 }
                 onClick={() => void jog(d.dx * jogStepMm, d.dy * jogStepMm)}
@@ -172,6 +174,54 @@ export const JogControlPad: React.FC = () => {
               </button>
             ))}
           </div>
+          {profile.pen.mode === 'z' && (
+            <div className="row-gap" style={{ gap: 4 }}>
+              <button
+                type="button"
+                className="btn btn-xs mono"
+                disabled={!canJog}
+                title={`Z 轴向抬笔方向移动 ${profile.z_jog_step_mm}mm`}
+                onClick={() =>
+                  void jogZ(
+                    Math.sign(profile.pen.z_up_mm - profile.pen.z_down_mm || 1) *
+                      profile.z_jog_step_mm,
+                  )
+                }
+              >
+                Z↑
+              </button>
+              <button
+                type="button"
+                className="btn btn-xs mono"
+                disabled={!canJog}
+                title={`Z 轴向落笔方向移动 ${profile.z_jog_step_mm}mm`}
+                onClick={() =>
+                  void jogZ(
+                    -Math.sign(profile.pen.z_up_mm - profile.pen.z_down_mm || 1) *
+                      profile.z_jog_step_mm,
+                  )
+                }
+              >
+                Z↓
+              </button>
+            </div>
+          )}
+          {profile.macros.length > 0 && (
+            <div className="row-gap" style={{ gap: 4, flexWrap: 'wrap' }}>
+              {profile.macros.map((m, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="btn btn-xs"
+                  disabled={machineState !== 'IDLE' || busyAction === `macro-${i}`}
+                  title={m.gcode}
+                  onClick={() => void runMacro(i)}
+                >
+                  {m.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

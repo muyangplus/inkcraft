@@ -17,6 +17,7 @@ import { useViewportStore } from './useViewportStore';
 const FALLBACK_PROFILE: MachineProfile = {
   profile_id: 'corexy_servo_a4',
   name: 'CoreXY A4 舵机写字机 (GRBL 1.1)',
+  port: 'auto',
   baud: 115200,
   pen: {
     mode: 'servo',
@@ -26,19 +27,51 @@ const FALLBACK_PROFILE: MachineProfile = {
     z_up_mm: 4.0,
     z_down_mm: 0.0,
     z_feed: 1200,
+    down_delay_ms: 0,
+    up_delay_ms: 0,
+    laser_power: 1000,
   },
   workspace_mm: { x: 220, y: 310 },
   pen_change_pos_mm: { x: 10, y: 10 },
   paper_change_pos_mm: { x: 0, y: 0 },
   origin: 'top_left',
+  x_axis: 'auto',
+  y_axis: 'auto',
+  swap_xy: false,
   invert_x: false,
   invert_y: false,
+  offset_mm: { x: 0, y: 0 },
   feed_draw: 2400,
   feed_travel: 5000,
   jog_feed: 3000,
   status_hz: 10,
   rx_buffer: 128,
+  rotation_deg: 0,
+  z_jog_step_mm: 1,
+  stream_mode: 'char_count',
+  auto_zero_on_start: false,
+  sleep_after_job: false,
+  legacy_grbl: false,
+  start_gcode: '',
+  end_gcode: '',
+  macros: [],
+  grbl_expected: {},
 };
+
+/** Fill fields that older backends / stored profiles may lack. */
+export function normalizeMachineProfile(p: Partial<MachineProfile>): MachineProfile {
+  return {
+    ...FALLBACK_PROFILE,
+    ...p,
+    pen: { ...FALLBACK_PROFILE.pen, ...p.pen },
+    offset_mm: { ...FALLBACK_PROFILE.offset_mm, ...p.offset_mm },
+    grbl_expected: { ...(p.grbl_expected ?? {}) },
+    macros: [...(p.macros ?? [])],
+  } as MachineProfile;
+}
+
+/** COM numbers change between USB sockets, so "auto" is the default port. */
+export const AUTO_PORT = 'auto';
 
 export interface MachineStoreState {
   // WebSocket link state
@@ -78,6 +111,8 @@ export interface MachineStoreState {
   fetchPorts: () => Promise<void>;
   fetchProfiles: () => Promise<void>;
   saveProfile: (profile: MachineProfile) => Promise<void>;
+  jogZ: (dz: number) => Promise<void>;
+  runMacro: (index: number) => Promise<void>;
 
   setSelectedPort: (port: string) => void;
   setBaud: (baud: number) => void;
@@ -131,7 +166,7 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
   activeJobPageCount: 1,
 
   ports: [{ device: 'MOCK', description: 'Mock GRBL 1.1 仿真串口' }],
-  selectedPort: 'MOCK',
+  selectedPort: AUTO_PORT,
   baud: 115200,
   profiles: [FALLBACK_PROFILE],
   activeProfileId: FALLBACK_PROFILE.profile_id,
@@ -174,7 +209,7 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
       case 'pen_change_ready':
         set({ jobState: 'PEN_CHANGE', machineState: 'PEN_CHANGE' });
         vp.setPenChangeOpen(true);
-        vp.pushToast('机械臂已到达换笔安全泊位', 'warn');
+        vp.pushToast('写字机已到达换笔安全泊位', 'warn');
         break;
       case 'resumed':
         set({ jobState: 'STREAMING' });
@@ -247,9 +282,12 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
         : [{ device: 'MOCK', description: 'Mock GRBL 1.1 仿真串口' }];
       set((s) => ({
         ports,
-        selectedPort: ports.some((p) => p.device === s.selectedPort)
-          ? s.selectedPort
-          : ports[0].device,
+        selectedPort:
+          s.selectedPort === AUTO_PORT ||
+          s.selectedPort === 'MOCK' ||
+          ports.some((p) => p.device === s.selectedPort)
+            ? s.selectedPort
+            : AUTO_PORT,
       }));
     } catch {
       // keep existing fallback
@@ -260,6 +298,7 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
     try {
       const res = await restClient.listProfiles();
       if (res.profiles.length > 0) {
+        res.profiles = res.profiles.map(normalizeMachineProfile);
         const activeId = res.active_profile_id || res.profiles[0].profile_id;
         const active = res.profiles.find((p) => p.profile_id === activeId) ?? res.profiles[0];
         set({
@@ -276,7 +315,7 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
   saveProfile: async (profile) => {
     try {
       const res = await restClient.updateProfile(profile.profile_id, profile);
-      const saved = res.profile;
+      const saved = normalizeMachineProfile(res.profile);
       set((s) => ({
         profiles: s.profiles.some((p) => p.profile_id === saved.profile_id)
           ? s.profiles.map((p) => (p.profile_id === saved.profile_id ? saved : p))
@@ -294,6 +333,31 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
     }
   },
 
+  jogZ: async (dz) => {
+    const profile = get().getActiveProfile();
+    try {
+      await restClient.jogMachine(0, 0, profile.pen.z_feed || 1200, dz);
+    } catch (err) {
+      useViewportStore
+        .getState()
+        .pushToast(`Z 点动失败: ${err instanceof Error ? err.message : String(err)}`, 'error');
+    }
+  },
+
+  runMacro: async (index) => {
+    set({ busyAction: `macro-${index}` });
+    try {
+      const res = await restClient.runMachineMacro(index);
+      useViewportStore.getState().pushToast(`已执行宏「${res.macro}」(${res.lines.length} 行)`, 'success');
+    } catch (err) {
+      useViewportStore
+        .getState()
+        .pushToast(`执行宏失败: ${err instanceof Error ? err.message : String(err)}`, 'error');
+    } finally {
+      set({ busyAction: null });
+    }
+  },
+
   setSelectedPort: (selectedPort) => set({ selectedPort }),
   setBaud: (baud) => set({ baud }),
   setActiveProfileId: (activeProfileId) => {
@@ -303,7 +367,7 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
   setMock: (mock) =>
     set((s) => ({
       mock,
-      selectedPort: mock ? 'MOCK' : s.ports.find((p) => p.device !== 'MOCK')?.device ?? s.selectedPort,
+      selectedPort: mock ? 'MOCK' : s.selectedPort === 'MOCK' ? AUTO_PORT : s.selectedPort,
     })),
   setJogStepMm: (jogStepMm) => set({ jogStepMm }),
 
@@ -326,7 +390,10 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
       });
       useViewportStore
         .getState()
-        .pushToast(res.mock ? '已连接 Mock GRBL 仿真机台' : `已连接串口 ${selectedPort}`, 'success');
+        .pushToast(
+          res.mock ? '已连接 Mock GRBL 仿真机台' : `已连接串口 ${res.port ?? selectedPort}`,
+          'success',
+        );
     } catch (err) {
       set({ machineState: 'ERROR' });
       useViewportStore

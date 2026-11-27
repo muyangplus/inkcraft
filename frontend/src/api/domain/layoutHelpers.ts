@@ -160,6 +160,7 @@ export const DEFAULT_LAYOUT_CONFIG: LayoutConfig = {
   fallback: { policy: 'blank' },
   page_rules: createDefaultPageRules(),
   regions: [],
+  writer_mix: [],
 };
 
 export function normalizeWritingRegion(

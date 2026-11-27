@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from handwrite.api.schemas import (
+from inkcraft.api.schemas import (
     ComposedPage,
     JobState,
     MachineProfile,
@@ -16,14 +16,14 @@ from handwrite.api.schemas import (
     PenConfig,
     StrokeItem,
 )
-from handwrite.core.db import Database
-from handwrite.core.events import EventBus
-from handwrite.gcode.compiler import compile_frame_gcode, compile_page_gcode
-from handwrite.gcode.optimizer import WorkspaceBoundsError, check_bounds, optimize_page
-from handwrite.grbl.controller import MachineController
-from handwrite.grbl.mock import MockGrblTransport
-from handwrite.grbl.parser import parse_status_line
-from handwrite.grbl.streamer import CharacterCountingStreamer
+from inkcraft.core.db import Database
+from inkcraft.core.events import EventBus
+from inkcraft.gcode.compiler import compile_frame_gcode, compile_page_gcode
+from inkcraft.gcode.optimizer import WorkspaceBoundsError, check_bounds, optimize_page
+from inkcraft.grbl.controller import MachineController
+from inkcraft.grbl.mock import MockGrblTransport
+from inkcraft.grbl.parser import parse_status_line
+from inkcraft.grbl.streamer import CharacterCountingStreamer
 
 
 def test_optimizer_preserves_text_and_reduces_chart_travel() -> None:

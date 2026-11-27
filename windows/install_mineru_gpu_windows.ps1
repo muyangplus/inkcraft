@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  Handwrite Studio - Optional Windows RTX 4070 Super (12GB) MinerU Pipeline GPU Installer
+  InkCraft - Optional Windows 12 GB NVIDIA GPU MinerU Pipeline GPU Installer
 .DESCRIPTION
   Creates an isolated runtime\mineru-venv with PyTorch CUDA 12.4 and MinerU `pipeline` backend
   (strictly avoiding vLLM/sglang to stay <= 8.5GB VRAM on 12GB cards) and writes .env.
@@ -16,7 +16,7 @@ $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  MinerU Pipeline GPU 环境安装 (适配 RTX 4070 Super 12GB)" -ForegroundColor Cyan
+Write-Host "  MinerU Pipeline GPU 环境安装 (适配 12 GB NVIDIA GPU)" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
 $uvCmd = Get-Command uv -ErrorAction SilentlyContinue
@@ -55,7 +55,7 @@ $envLines = @(
     "MINERU_CHUNK_PAGES=10",
     "MINERU_MAX_DPI=200",
     "MINERU_BIN=$mineruExe",
-    "HANDWRITE_MINERU_PYTHON=$mineruPy"
+    "INKCRAFT_MINERU_PYTHON=$mineruPy"
 )
 Set-Content -Path $envFile -Value ($envLines -join "`r`n") -Encoding UTF8
 

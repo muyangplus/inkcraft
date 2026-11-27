@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  Handwrite Studio - Windows One-Click Launcher
+  InkCraft - Windows One-Click Launcher
 #>
 param(
     [int]$Port = 8765,
@@ -21,11 +21,11 @@ if (-not (Test-Path $venvPy)) {
 }
 
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  正在启动 墨迹工坊 (Handwrite Studio)..." -ForegroundColor Cyan
+Write-Host "  正在启动 墨迹工坊 InkCraft..." -ForegroundColor Cyan
 Write-Host "  关闭本窗口即可停止服务" -ForegroundColor DarkGray
 Write-Host "============================================================" -ForegroundColor Cyan
 
-$runArgs = @("-m", "handwrite", "--host", $BindHost, "--port", "$Port", "--auto-port")
+$runArgs = @("-m", "inkcraft", "--host", $BindHost, "--port", "$Port", "--auto-port")
 if (-not $NoBrowser) {
     $runArgs += "--open-browser"
 }

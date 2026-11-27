@@ -79,7 +79,7 @@ export const JobActionPanel: React.FC = () => {
       return;
     }
     if (isOutOfBounds) {
-      pushToast('当前页外框超出机械臂物理工作区，请缩小纸张或调整偏移', 'error');
+      pushToast('当前页外框超出写字机物理工作区，请缩小纸张或调整偏移', 'error');
       return;
     }
     void frameCheck(layout.layout_id, currentPageIndex);
@@ -141,7 +141,7 @@ export const JobActionPanel: React.FC = () => {
         disabled={!canFrame || busyAction === 'frame'}
         title={
           isOutOfBounds
-            ? '外框超出机械臂物理工作区，已拦截'
+            ? '外框超出写字机物理工作区，已拦截'
             : machineState === 'IDLE' || machineState === 'PAPER_CHANGE'
               ? '强制抬笔沿当前页边界外框试跑一圈'
               : `当前状态 (${machineState}) 禁止试跑外框`

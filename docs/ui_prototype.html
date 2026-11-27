@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>墨迹工坊 · 独立 AI 多人笔迹与 GRBL 写字机械臂上位机</title>
+<title>墨迹工坊 InkCraft · 多书写者笔迹排版与 GRBL 写字机上位机（设计原型）</title>
 <style>
   :root[data-theme="precision-dark"] {
     --bg-stage: #111418;
@@ -608,7 +608,7 @@
     <!-- LEFT STUDIO PANEL -->
     <aside class="side-panel left-panel">
       <div class="panel-tabs" id="leftTabs">
-        <button class="panel-tab active" data-tab="writers">笔迹库</button>
+        <button class="panel-tab active" data-tab="writers">笔迹字库</button>
         <button class="panel-tab" data-tab="layout">排版模式</button>
         <button class="panel-tab" data-tab="perturb">扰动与图表</button>
       </div>
@@ -676,7 +676,7 @@
               <input type="range" id="rngMargin" min="10" max="36" step="1" value="20" />
             </div>
             <div class="row-between" style="font-size:11.5px;color:var(--text-secondary);">
-              <span>机械臂同步绘制格线 (ruled.draw)</span>
+              <span>写字机同步绘制格线 (ruled.draw)</span>
               <label class="switch"><input type="checkbox" id="chkDrawRuled" /><span class="switch-slider"></span></label>
             </div>
           </div>
@@ -831,7 +831,7 @@
             <div class="stage-step"></div><div class="stage-step"></div><div class="stage-step"></div><div class="stage-step"></div>
           </div>
           <div class="row-between" style="font-size:11.5px;color:var(--text-secondary);">
-            <span id="parseStageMsg">正在初始化 Pipeline (RTX 4070 Super 12GB)…</span>
+            <span id="parseStageMsg">正在初始化 Pipeline (12 GB NVIDIA GPU)…</span>
             <span class="mono" id="parsePageCount">1/2 页</span>
           </div>
         </div>
@@ -1039,8 +1039,8 @@
         <div><div class="ctrl-label">Z 进给</div><input type="number" class="mono" id="inpZFeed" value="600" /></div>
       </div>
       <div class="grid-2">
-        <div><div class="ctrl-label">机械臂 X 行程 (mm)</div><input type="number" class="mono" id="inpWorkX" value="220" /></div>
-        <div><div class="ctrl-label">机械臂 Y 行程 (mm)</div><input type="number" class="mono" id="inpWorkY" value="310" /></div>
+        <div><div class="ctrl-label">写字机 X 行程 (mm)</div><input type="number" class="mono" id="inpWorkX" value="220" /></div>
+        <div><div class="ctrl-label">写字机 Y 行程 (mm)</div><input type="number" class="mono" id="inpWorkY" value="310" /></div>
       </div>
       <div class="grid-2">
         <div><div class="ctrl-label">书写速度 feed_draw (mm/min)</div><input type="number" class="mono" id="inpFeedDraw" value="2200" /></div>
@@ -1069,7 +1069,7 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:7px;padding:10px;font-size:12px;">
-            <div>机械臂已自动<strong>抬笔并回停靠位</strong>（<code class="mono">X:0 Y:0 UP</code>）。</div>
+            <div>写字机已自动<strong>抬笔并回停靠位</strong>（<code class="mono">X:0 Y:0 UP</code>）。</div>
             <div style="color:var(--text-secondary);margin-top:5px;">
               1. 取出已完成的第 1 页纸张；<br/>
               2. 放好第 2 页空白纸并压紧边角；<br/>
@@ -1098,7 +1098,7 @@
     </div>
     <div class="modal-body">
       <div style="font-size:12.5px;line-height:1.6;">
-        机械臂已记录精确断点坐标并抬笔移至前端换笔泊位。<br/>
+        写字机已记录精确断点坐标并抬笔移至前端换笔泊位。<br/>
         请更换新笔芯，可使用下方按钮测试落笔贴纸高度：
       </div>
       <div class="grid-2">
@@ -2379,7 +2379,7 @@ function startFrameCheck(targetPageIdx = state.pageIndex) {
   const [x0, y0, x1, y1] = page.bbox;
   const ws = state.machine.profile.workspace_mm;
   if (x0 < 0 || y0 < 0 || x1 > ws.x || y1 > ws.y) {
-    showToast('⚠ 路径超出机械臂物理行程，已拦截试跑！');
+    showToast('⚠ 路径超出写字机物理行程，已拦截试跑！');
     logSerial('rx', 'ALARM: Soft-limit exceeded during Frame Check', 'err');
     return;
   }
@@ -2515,7 +2515,7 @@ function tick(now) {
         setMachineState('IDLE', 'Idle', 'COMPLETED');
         state.machine.wpos.x = 0; state.machine.wpos.y = 0;
         logSerial('rx', 'WS job.event: job_done (全部 2 页书写完成)', 'rx');
-        showToast('🎉 全部 2 页书写完成！机械臂已抬笔归位');
+        showToast('🎉 全部 2 页书写完成！写字机已抬笔归位');
       }
     } else {
       const st = page.strokes[state.job.strokeCursor];
@@ -2786,7 +2786,7 @@ function bindEvents() {
     const stages = [
       { stage: 'upload', pct: 12, msg: 'upload · 上传并校验文档结构…', p: '1/2 页' },
       { stage: 'convert', pct: 26, msg: 'convert · PDF 页面光栅化…', p: '1/2 页' },
-      { stage: 'mineru_layout', pct: 44, msg: 'mineru_layout · 版面区块识别 (RTX 4070S Pipeline)…', p: '1/2 页' },
+      { stage: 'mineru_layout', pct: 44, msg: 'mineru_layout · 版面区块识别 (GPU Pipeline)…', p: '1/2 页' },
       { stage: 'mineru_ocr', pct: 60, msg: 'mineru_ocr · 文本行精准抽取…', p: '1/2 页' },
       { stage: 'mineru_formula', pct: 76, msg: 'mineru_formula · 数学公式转单线 LaTeX AST…', p: '2/2 页' },
       { stage: 'mineru_table', pct: 90, msg: 'mineru_table · 表格与柱状图结构解析…', p: '2/2 页' },

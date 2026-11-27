@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "packages" / "hwfont_sdk"))
 sys.path.insert(0, str(ROOT / "backend"))
 
-from handwrite.writers.fallback.hershey import BUILTIN_GLYPHS  # noqa: E402
+from inkcraft.writers.fallback.hershey import BUILTIN_GLYPHS  # noqa: E402
 from hwfont_sdk import HwFontMeta, HwFontReader, HwFontWriter  # noqa: E402
 
 
@@ -41,7 +41,7 @@ STYLES = [
         writer_id="11111111-1111-4111-8111-111111111101",
         writer_name="林清河",
         writer_alias="行楷·端正笔记体",
-        author="Handwrite Studio",
+        author="InkCraft",
         style_tags=["行楷", "工整", "理工笔记"],
         slant_deg=2.2,
         x_scale=0.98,
@@ -57,7 +57,7 @@ STYLES = [
         writer_id="22222222-2222-4222-8222-222222222202",
         writer_name="陈墨白",
         writer_alias="行书·右倾流畅体",
-        author="Handwrite Studio",
+        author="InkCraft",
         style_tags=["行书", "偏右倾", "连贯流畅"],
         slant_deg=7.5,
         x_scale=1.03,
@@ -73,7 +73,7 @@ STYLES = [
         writer_id="33333333-3333-4333-8333-333333333303",
         writer_name="苏工图",
         writer_alias="仿宋·紧凑工程体",
-        author="Handwrite Studio",
+        author="InkCraft",
         style_tags=["工程字", "紧凑", "竖直清晰"],
         slant_deg=-0.8,
         x_scale=0.91,

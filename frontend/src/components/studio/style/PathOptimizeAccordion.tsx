@@ -28,7 +28,7 @@ export const PathOptimizeAccordion: React.FC = () => {
       >
         <span className="section-head-title">
           <Gauge size={13} style={{ color: 'var(--accent-primary)' }} />
-          路径优化与机械臂提速
+          路径优化与写字机提速
           {modifiedCount > 0 && <span className="accordion-count-badge">{modifiedCount} 项调整</span>}
         </span>
         {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}

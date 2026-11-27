@@ -268,10 +268,10 @@ export const FontBuilderModal: React.FC = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'handwrite_colab_bundle.zip';
+      a.download = 'inkcraft_colab_bundle.zip';
       a.click();
       window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      pushToast('已打包下载 Colab 云端任务包 (handwrite_colab_bundle.zip)', 'success');
+      pushToast('已打包下载 Colab 云端任务包 (inkcraft_colab_bundle.zip)', 'success');
     } catch (err) {
       pushToast(`打包 Colab 任务包失败: ${err instanceof Error ? err.message : String(err)}`, 'error');
     } finally {
@@ -738,7 +738,7 @@ export const FontBuilderModal: React.FC = () => {
                 ) : (
                   <FileArchive size={14} />
                 )}
-                打包下载 Colab 云端任务包 (handwrite_colab_bundle.zip)
+                打包下载 Colab 云端任务包 (inkcraft_colab_bundle.zip)
               </button>
 
               <div
@@ -752,7 +752,7 @@ export const FontBuilderModal: React.FC = () => {
                   lineHeight: 1.6,
                 }}
               >
-                1. 将下载的 <code className="mono">handwrite_colab_bundle.zip</code> 上传到 Google Drive 或 Colab 会话并解压；
+                1. 将下载的 <code className="mono">inkcraft_colab_bundle.zip</code> 上传到 Google Drive 或 Colab 会话并解压；
                 <br />
                 2. 在免费 T4/L4 GPU 环境下按顺序运行 <code className="mono">02_scan_to_trajectories.ipynb</code> 与{' '}
                 <code className="mono">03_train_and_export.ipynb</code>；

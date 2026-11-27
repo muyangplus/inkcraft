@@ -479,7 +479,13 @@ export function renderPenCrosshairLayer(
 ): void {
   const penPos =
     machineState !== 'DISCONNECTED'
-      ? { x: status.wpos.x, y: status.wpos.y, down: status.pen === 'down' }
+      ? {
+          // page_pos is machine WPos mapped back to paper coordinates (handles
+          // negative-Y / right-origin machines such as 奎享 "左上" setups).
+          x: status.page_pos?.x ?? status.wpos.x,
+          y: status.page_pos?.y ?? status.wpos.y,
+          down: status.pen === 'down',
+        }
       : simPenXY;
   if (!penPos) return;
 

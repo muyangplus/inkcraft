@@ -1,4 +1,7 @@
-# 独立 AI 多人笔迹与 GRBL 写字机械臂上位机系统 —— 系统框架与架构蓝图
+# 墨迹工坊 InkCraft —— 系统框架与架构蓝图
+
+> **文档状态：设计蓝图（历史文档）**。本文写于开发初期，部分模块名、路径与接口已随实现调整。
+> 当前实现以代码、[`openapi.json`](./openapi.json)、[`FEATURES.md`](./FEATURES.md) 与 [`machine_control.md`](./machine_control.md) 为准；术语见 [`README.md`](./README.md#术语表)。
 
 > 文档编号：HW-ARCH-001 · 版本：v1.0 · 负责人：framework-architect
 > 姊妹文档：[`ui_design.md`](./ui_design.md)（UI/UX 规范，ui-designer 维护）、[`ui_prototype.html`](./ui_prototype.html)
@@ -14,7 +17,7 @@
 4. [`.hwfont` 单文件笔迹字体格式规范](#4-hwfont-单文件笔迹字体格式规范)
 5. [笔迹运行时：热插拔、异形选择与回退链](#5-笔迹运行时热插拔异形选择与回退链)
 6. [文档解析层：DOCX / PDF → 统一中间表示 DocIR](#6-文档解析层docx--pdf--统一中间表示-docir)
-7. [RTX 4070 Super 12GB 显存预算与 MinerU Pipeline 部署](#7-rtx-4070-super-12gb-显存预算与-mineru-pipeline-部署)
+7. [12 GB NVIDIA GPU 显存预算与 MinerU Pipeline 部署](#7-12-gb-nvidia-gpu-显存预算与-mineru-pipeline-部署)
 8. [排版引擎：智能手写重排 与 原版坐标套打](#8-排版引擎智能手写重排-与-原版坐标套打)
 9. [LaTeX 单线盒模型（数学公式排版）](#9-latex-单线盒模型数学公式排版)
 10. [表格与图表：手绘单线 + 剖面线填充流水线](#10-表格与图表手绘单线--剖面线填充流水线)
@@ -23,7 +26,7 @@
 13. [路径优化与 G-code 编译](#13-路径优化与-g-code-编译)
 14. [GRBL 通信、流式传输与安全协议](#14-grbl-通信流式传输与安全协议)
 15. [任务、持久化与断点续写](#15-任务持久化与断点续写)
-16. [Colab 云端 AI 字体构建器架构](#16-colab-云端-ai-字体构建器架构)
+16. [Colab 云端 AI 笔迹字库构建器架构](#16-colab-云端-ai-笔迹字库构建器架构)
 17. [前端集成要点](#17-前端集成要点)
 18. [目录脚手架](#18-目录脚手架)
 19. [测试、质量与非功能指标](#19-测试质量与非功能指标)
@@ -67,7 +70,7 @@
 
 ```mermaid
 flowchart TB
-    subgraph Cloud["Google Colab 字体构建器"]
+    subgraph Cloud["Google Colab 笔迹字库构建器"]
         C1["扫描导入与去噪"] --> C2["分割与标注"]
         C2 --> C3["骨架化与笔顺轨迹恢复"]
         C3 --> C4["少样本风格生成"]
@@ -99,7 +102,7 @@ flowchart TB
         MK["MockGrbl 仿真器"]
     end
 
-    subgraph GPU["独立子进程 RTX 4070 Super"]
+    subgraph GPU["独立子进程 NVIDIA GPU"]
         MU["MinerU Pipeline 后端"]
     end
 
@@ -111,7 +114,7 @@ flowchart TB
     LY --> GC
     JM --> MC --> ST --> TR
     TR -. "mock=true" .-> MK
-    TR <-- "USB 虚拟串口" --> GRBL["GRBL 1.1 写字机械臂"]
+    TR <-- "USB 虚拟串口" --> GRBL["GRBL 1.1 写字机"]
     MC & JM & DP & LY --> BUS --> API
 ```
 
@@ -177,7 +180,7 @@ sequenceDiagram
 | 几何 | numpy、shapely 2.x（多边形裁剪/剖面线）、scipy（样条、KD-Tree） | |
 | 数据 | SQLite（`.hwfont`、`app.db`）、文件系统（大对象） | |
 | 前端 | React 18 + TypeScript + Vite + Zustand + Canvas 2D（OffscreenCanvas/Worker） | 细节见 `ui_design.md` |
-| 打包 | `uv` 管理环境；`python -m handwrite` 启动并自动打开浏览器；可选 pywebview 壳 | |
+| 打包 | `uv` 管理环境；`python -m inkcraft` 启动并自动打开浏览器；可选 pywebview 壳 | |
 | 云端 | Colab（T4/L4/A100）、PyTorch 2.x、OpenCV、scikit-image | |
 
 ---
@@ -405,7 +408,7 @@ flowchart LR
     E -- box --> H["绘制单线方框占位"]
 ```
 
-- 内置回退字库（随程序发行，`backend/handwrite/writers/fallback/`）：
+- 内置回退字库（随程序发行，`backend/inkcraft/writers/fallback/`）：
   - `hershey_latin_greek_symbols.hwfont`：由公有领域 Hershey 单线字体转换，覆盖拉丁、希腊字母、数学运算符。
   - `std_kai_skeleton.hwfont`（可选）：标准楷体单线中轴骨架，仅在书写者缺字时兜底（需核验数据源授权，见 §20）。
 - 回退结果在 `GET /layouts/{id}` 的 `pages[].fallback_glyphs` 中汇总（`[{char,count}]`），UI 给出缺字警告。
@@ -453,7 +456,7 @@ flowchart TD
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://handwrite.local/schema/docir.v1.json",
+  "$id": "https://inkcraft.local/schema/docir.v1.json",
   "title": "DocIR",
   "type": "object",
   "required": ["doc_id", "source", "pages", "blocks"],
@@ -585,7 +588,7 @@ class DocxViaPdfParser(DocParser): ...       # LibreOffice → PdfMinerUParser�
 
 ---
 
-## 7. RTX 4070 Super 12GB 显存预算与 MinerU Pipeline 部署
+## 7. 12 GB NVIDIA GPU 显存预算与 MinerU Pipeline 部署
 
 ### 7.1 约束与决策
 
@@ -698,7 +701,7 @@ flowchart LR
    - 拉丁单词与数字串不可拆（超长单词按字符断开）；行内公式 `MathBox` 默认不可拆，宽于行宽时在顶层关系符（`= < > \le \ge`）或二元运算符处拆分，再不行则等比缩小至 ≥ 70%。
    - 对齐：`justify` 时 CJK 字间均分余量；段末行左对齐。
 3. **行高**：`line_pitch = max(font_size_mm × line_spacing, ruled.pitch_mm)`；若行内含高公式（如分式），行高按 `ceil(box_height / pitch)` 个格距扩展，保证基线始终落在横线上。
-4. **横线/方格**（`text.ruled`）：`style=lines` 时基线对齐横线（基线在横线上方 `0.15 × pitch` 处，模拟真实书写）；`style=grid` 时 CJK 每字居中于方格；`draw=true` 时横线本身作为 `kind=rule` 笔画由机械臂画出（手绘抖动，见 §10.4）。
+4. **横线/方格**（`text.ruled`）：`style=lines` 时基线对齐横线（基线在横线上方 `0.15 × pitch` 处，模拟真实书写）；`style=grid` 时 CJK 每字居中于方格；`draw=true` 时横线本身作为 `kind=rule` 笔画由写字机画出（手绘抖动，见 §10.4）。
 5. **分页**：段落可跨页（孤行/寡行控制：≥2 行）；表格按行拆分并重复表头；图表与独立公式整体不可拆，放不下时移至下页，前页余白不再回填（保持阅读顺序）。
 6. **首行缩进**：`first_line_indent_chars` 个全宽字。
 
@@ -854,7 +857,7 @@ flowchart TD
 
 对任一折线 `L`：
 1. 等弧长重采样（步长 1 mm）。
-2. 法向位移 `n(t) = A · noise1d(t / λ + φ)`，`A = hand_jitter_mm`，`λ = 25 mm`，`noise1d` 为种子化值噪声（平滑、无高频，避免机械臂抖动）。
+2. 法向位移 `n(t) = A · noise1d(t / λ + φ)`，`A = hand_jitter_mm`，`λ = 25 mm`，`noise1d` 为种子化值噪声（平滑、无高频，避免写字机抖动）。
 3. 起止端各施加 `U(0, 0.4) mm` 过冲/欠冲；长直线中段叠加 `≤ 0.2°` 的整体轻微弯曲。
 4. Ramer–Douglas–Peucker 简化（`optimize.simplify_tol_mm`）后输出。
 
@@ -885,7 +888,7 @@ rng(scope) = numpy.random.Generator(PCG64(SeedSequence([seed, hash32(scope...)])
 ### 11.3 约束
 
 - **防碰撞**：扰动后字形 bbox 与相邻字形重叠面积 > 8% 时，将该字缩放回退一半。
-- **字内一致**：扰动只施加整体仿射（缩放/剪切/旋转/平移），不对笔画点做独立高频噪声，避免机械臂抖动与"抖笔"假象（真实书写的细节已经包含在异形字形中）。
+- **字内一致**：扰动只施加整体仿射（缩放/剪切/旋转/平移），不对笔画点做独立高频噪声，避免写字机抖动与"抖笔"假象（真实书写的细节已经包含在异形字形中）。
 - **作用域差异**：公式缩放扰动 ×0.5、基线波动 ×0；表格单元格内基线波动 ×0.5；标题字号放大时扰动按比例不变（相对值）。
 - 全部仿射合成为单个 `3×3` 矩阵在 Emitter 阶段一次性作用于字形点（`numpy` 向量化）。
 
@@ -907,7 +910,7 @@ class MachineState(StrEnum):
     JOGGING      = "JOGGING"        # 点动中 ($J=)
     FRAMING      = "FRAMING"        # 外框边界试跑中
     RUNNING      = "RUNNING"        # 正在流式写字
-    HOLDING      = "HOLDING"        # 已发送 !，等待机械臂减速至 Hold:0
+    HOLDING      = "HOLDING"        # 已发送 !，等待写字机减速至 Hold:0
     PAUSED       = "PAUSED"         # 已完全停止并抬笔，等待续写或换笔
     PEN_CHANGE   = "PEN_CHANGE"     # 已移动至换笔位并抬笔，等待用户换笔后点击续写
     PAPER_CHANGE = "PAPER_CHANGE"   # 单页完成，已退回原位并抬笔，等待换纸确认
@@ -1036,7 +1039,7 @@ TaskState = Literal["pending", "running", "done", "failed"]
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://handwrite.local/schema/layout-config.v1.json",
+  "$id": "https://inkcraft.local/schema/layout-config.v1.json",
   "title": "LayoutConfig",
   "type": "object",
   "required": ["mode", "page", "text", "perturb", "formula", "chart", "table", "overlay", "optimize", "fallback"],
@@ -1326,7 +1329,7 @@ class GrblStreamer:
    - 若此时笔处于落笔态，**注意**：GRBL 在 Hold 状态下不执行新运动指令，因此：
      - 纯"短暂停顿"（`PAUSED`）：保持 Hold 态（舵机如支持实时主轴停止 `0x9E` 则发 `0x9E` 临时抬笔；否则直接进入可控抬笔流程）；
      - 为兼顾所有 GRBL 1.1 固件（舵机与 Z 轴），**换笔流程（`/jobs/{id}/pen-change`）**采用确定性**断点重建**策略：
-       1. 等 `Hold:0` 后发送 `0x18` 清空规划器剩余队列（已知当前 `acked_line` 与 `saved_wpos`，且工作坐标零点通过重设 `G92 X<saved_wpos.x> Y<saved_wpos.y>` 精确保持，因为机械臂已完全静止未丢步！）；
+       1. 等 `Hold:0` 后发送 `0x18` 清空规划器剩余队列（已知当前 `acked_line` 与 `saved_wpos`，且工作坐标零点通过重设 `G92 X<saved_wpos.x> Y<saved_wpos.y>` 精确保持，因为写字机已完全静止未丢步！）；
        2. `$X` 解锁 → `<PEN_UP>` 抬笔 → `G0 X<pen_change_x> Y<pen_change_y>` 移至换笔位；
        3. 广播 `job.event{event:"pen_change_ready"}`，状态置 `PEN_CHANGE`；
        4. 用户更换笔芯并微调笔尖高度（允许在 `PEN_CHANGE` 状态测试抬落笔）；
@@ -1341,7 +1344,7 @@ class GrblStreamer:
 #### E. 多页换纸流
 1. 每页 G-code 末尾强制 `<PEN_UP>` + `G0 X<paper_change_x> Y<paper_change_y>` + `G4 P0.1`（排空规划器，确认 `grbl_state == Idle`）。
 2. 推送 `job.event{event:"page_done", page_index}`；若还有下一页，状态切 `PAPER_CHANGE` / `WAIT_PAPER`，推送 `job.event{event:"paper_change_required", page_index: next_page}`。
-3. 机械臂静止等待，直到用户在 UI 换好纸并点击"已换纸，继续下一页"（`POST /jobs/{id}/paper-ready {page_index}`），才开始流式下发下一页。
+3. 写字机静止等待，直到用户在 UI 换好纸并点击"已换纸，继续下一页"（`POST /jobs/{id}/paper-ready {page_index}`），才开始流式下发下一页。
 
 #### F. 点动与置零
 - 点动使用 GRBL 1.1 原生点动指令 `$J=G91 G21 X<dx> Y<dy> F<feed>`，支持 `0x85` 无失步即时取消，并做软件工作区软限位预检。
@@ -1362,7 +1365,7 @@ class GrblStreamer:
 
 ```
 data/
-  app.db                  # 系统状态、文档索引、布局索引、任务与断点、机器配置
+  app.db                  # 系统状态、文档索引、布局索引、任务与断点、机台档案
   writers/                # *.hwfont 单文件字库（可拷贝迁移）
   documents/<doc_id>/     # source.(docx|pdf), docir.json, pages/<n>.png
   layouts/<layout_id>/    # meta.json, pages/<n>.f32, pages/<n>.json, pages/<n>.gcode, pages/<n>.lmap
@@ -1439,7 +1442,7 @@ CREATE TABLE tasks (
 
 ---
 
-## 16. Colab 云端 AI 字体构建器架构
+## 16. Colab 云端 AI 笔迹字库构建器架构
 
 > 针对核心约束：**原始素材仅有每位书写者的静态纸面手写扫描件，不含在线笔顺轨迹**。
 > 构建器以独立包 `colab_builder/` + Notebook 形式运行在 Google Colab（T4 16GB / L4 24GB / A100 40GB），与本地端共享 `hwfont_sdk`，输出标准单文件 `.hwfont` 后下载到本地 `data/writers/` 即插即用。
@@ -1500,7 +1503,7 @@ flowchart LR
 | 笔画数合理性 | 与标准字笔画数偏差不超过 `[-35%, +20%]`（允许合理连笔，拒绝严重缺笔或噪点碎片） |
 | 可读性回检（OCR 闭环） | 将生成单线轨迹以固定笔宽渲染为 128×128 灰度图，用轻量中文手写识别器回检 Top-3 命中目标字，未命中则降权或重采 |
 | 异形多样性 | 同一字符任意两异形归一化 Chamfer 距离需 ≥ 18u，防止"假异形" |
-| 机械臂友好性 | 去除自相交死结、单笔点数限制 ≤ 120（RDP 简化容差 4u）、总点数 ≤ 450 |
+| 写字机友好性 | 去除自相交死结、单笔点数限制 ≤ 120（RDP 简化容差 4u）、总点数 ≤ 450 |
 
 通过门禁后由 `HwFontWriter` 批量写入并执行 `finalize()`（计算 `content_sha256`、`VACUUM`、`journal_mode=DELETE`），导出 `<writer_name>_v1.0.hwfont`（约 6–12 MB）。
 
@@ -1523,11 +1526,11 @@ flowchart LR
 ## 18. 目录脚手架
 
 ```text
-handwrite/
+inkcraft/
 ├── pyproject.toml                       # workspace 根配置（uv workspace）
 ├── README.md
 ├── config/
-│   ├── default_profiles.json            # 预置机器配置（CoreXY 舵机 / Z 轴步进）
+│   ├── default_profiles.json            # 预置机台档案（CoreXY 舵机 / Z 轴步进）
 │   └── mineru.env.example               # MinerU 离线与 12GB 显存配置模板
 ├── docs/
 │   ├── framework_architecture.md        # 本文档
@@ -1545,9 +1548,9 @@ handwrite/
 │           └── verify.py                # content_sha256 与几何完整性校验
 ├── backend/
 │   ├── pyproject.toml
-│   └── handwrite/
+│   └── inkcraft/
 │       ├── __init__.py
-│       ├── __main__.py                  # `python -m handwrite` 启动入口
+│       ├── __main__.py                  # `python -m inkcraft` 启动入口
 │       ├── config.py                    # 路径、端口、MinerU 配置
 │       ├── api/
 │       │   ├── app.py                   # FastAPI 组装、CORS、静态托管前端 dist
@@ -1633,7 +1636,7 @@ handwrite/
 | 确定性回归（Golden） | 固定 `.hwfont` + `DocIR` + `seed=42` 生成的 `paths` 与 `gcode` 逐版本比对；另渲染调试 SVG 供人工目检公式与图表 | `pytest` golden fixtures |
 | 硬件协议集成测试 | 使用 `MockGrbl` 跑通完整多页任务：Frame Check → 启动 → 写到第 50 笔暂停 → 换笔 → 续写 → 第 1 页换纸 → 第 2 页中途 E-Stop → 解锁 → 断点续写；同时验证 RX 字节数永不越界、E-Stop 延迟 < 30 ms | `pytest-asyncio` + `MockGrbl` |
 | GPU / 显存压测 | 50 页含公式/表格/图表混排学术 PDF 连续解析，记录 `nvidia-smi` 峰值显存与 OOM 自动降级恢复 | `scripts/bench_mineru_vram.py` |
-| 实机验收（HIL） | 真实 GRBL 舵机/Z 轴机械臂空跑与落笔实测：急停抬笔可靠性、换笔后二次落笔误差 ≤ 0.2 mm、套打 4 角偏差 ≤ 0.5 mm | 实机验收清单 |
+| 实机验收（HIL） | 真实 GRBL 舵机/Z 轴写字机空跑与落笔实测：急停抬笔可靠性、换笔后二次落笔误差 ≤ 0.2 mm、套打 4 角偏差 ≤ 0.5 mm | 实机验收清单 |
 
 ### 19.2 关键非功能指标（SLO）
 
@@ -1641,7 +1644,7 @@ handwrite/
 |---|---|
 | E-Stop 指令到达串口延迟 | P99 < 30 ms |
 | 10 页 A4 纯文本重排耗时 | ≤ 3 s（含路径优化与 G-code 编译） |
-| 50 页混排 PDF（RTX 4070 Super）峰值显存 | ≤ 8.5 GB（保留 ≥ 3.5 GB 余量） |
+| 50 页混排 PDF（NVIDIA GPU）峰值显存 | ≤ 8.5 GB（保留 ≥ 3.5 GB 余量） |
 | 前端画布 100k 线段缩放/平移帧率 | ≥ 60 fps |
 | 连续 10 页写字流式串口丢包/缓冲溢出率 | 0 |
 | 同 seed 跨次重排一致性 | 100% 字节级一致 |
@@ -1654,7 +1657,7 @@ handwrite/
 |---|---|---|---|
 | R1 | **GRBL 舵机分支差异**：不同写字机固件（标准 GRBL 1.1f vs 舵机改版）对 `M3 Sxxx` 角度范围、是否启用激光模式 `$32` 行为不同 | 抬落笔延迟不准或运动中未等舵机到位就开始移动 | `MachineProfile` 允许自定义 `servo_up`/`servo_down`/`dwell_ms`；连接时自动检查 `$32=0`（禁止激光模式，防止 `G0` 下意外更改 PWM）；强烈约定 `M5=抬笔` |
 | R2 | **MinerU 版本与依赖冲突**：MinerU 更新频繁且绑定特定 `torch`/`cuda` 版本 | 主程序升级困难或显存策略失效 | 将 MinerU 隔离在独立虚拟环境与子进程；通过 `MinerUAdapter` 屏蔽 `middle.json` 字段变动，并固定本地已验证版本号 |
-| R3 | **RTX 4070 Super 复杂页 OOM**：超高分辨率扫描页或巨型表格导致单批显存尖峰 | 解析进程崩溃 | 限制输入渲染 DPI（≤ 200）、每 10 页分块、设置 `MINERU_VIRTUAL_VRAM_SIZE=8`，并内置自动"块拆半 → CPU 降级"两级重试 |
+| R3 | **NVIDIA GPU 复杂页 OOM**：超高分辨率扫描页或巨型表格导致单批显存尖峰 | 解析进程崩溃 | 限制输入渲染 DPI（≤ 200）、每 10 页分块、设置 `MINERU_VIRTUAL_VRAM_SIZE=8`，并内置自动"块拆半 → CPU 降级"两级重试 |
 | R4 | **扫描件连笔/草写导致笔顺恢复错误** | 生成字形在写字机上出现怪异回笔或断笔 | 模板配准失败自动标记低 `quality` 进入 Colab 质检面板；采集表引导书写者写清晰行楷；提供少量单字手绘修补工具 |
 | R5 | **单色笔无法表达多色图表** | 柱状图/折线图多系列混淆 | 强制采用差异化剖面线角度/交叉网格 + 折线端点标记 + 同步图例重绘 |
 | R6 | **内置回退字库与训练数据版权/授权** | 合规风险 | 拉丁/数学符号使用公有领域 Hershey 字体；笔顺先验遵循 MakeMeAHanzi 等开源协议并附带声明；每位书写者的 `.hwfont` 在 `meta.license` 记录本人授权声明 |
@@ -1670,7 +1673,7 @@ flowchart LR
     P1 --> P2["P2 拟人化与交互完善<br/>多异形 + 扰动 + 换笔/换纸/急停"]
     P2 --> P3["P3 公式与图表引擎<br/>LaTeX 盒模型 + 表格/图表剖面线"]
     P3 --> P4["P4 文档解析与套打<br/>DOCX + MinerU 12GB + 原版套打"]
-    P4 --> P5["P5 Colab AI 字体构建器<br/>扫描→笔顺恢复→少样本→.hwfont"]
+    P4 --> P5["P5 Colab AI 笔迹字库构建器<br/>扫描→笔顺恢复→少样本→.hwfont"]
     P5 --> P6["P6 实机联调与发布<br/>HIL 验收 + 打包交付"]
 ```
 
@@ -1680,6 +1683,6 @@ flowchart LR
 | **P1：最小写字闭环** | `WriterRegistry`、纯文本重排（含禁则/分页）、`PathOptimizer`、`GcodeCompiler`、`MachineController`（连接/点动/置零/外框/写字）、前端画布 `f32` 渲染 | 用测试字库输入一段中英文文本，在 MockGrbl 与实机上成功完成单页绘制与 Frame Check |
 | **P2：拟人化与硬件安全** | 同字异形调度、完整拟人扰动模型、实时暂停→换笔→原位续写、多页换纸弹窗、带抬笔 E-Stop、断点续写 | 连续 3 页测试中任意位置暂停换笔、急停解锁、断电续写均零失步、零拖墨 |
 | **P3：公式与图表引擎** | `MathTypesetter`（LaTeX 子集单线盒模型）、`TableRenderer`、`ChartRenderer`（柱/折/饼/散点 + 三种剖面线 + 手绘化） | Golden 测试覆盖 30+ 典型数学公式（分式/根号/积分/矩阵/分段函数）与 4 类图表，肉眼可读且与正文笔迹风格统一 |
-| **P4：文档解析与原版套打** | `DocxStructuredParser`（pandoc + Chart XML）、`PdfMinerUParser`（独立子进程 + 12GB 显存管控）、`overlay` 原版坐标套打与底图对位 | 50 页混排学术 PDF 在 RTX 4070 Super 上峰值显存 ≤ 8.5 GB；A4 套打表格实机四角偏差 ≤ 0.5 mm |
-| **P5：Colab AI 字体构建器** | 采集表生成器、扫描分割与去网格、模板引导笔顺轨迹恢复、少样本风格模型微调与质检导出 Notebook | 仅凭 1 位书写者的 4 页纸面扫描件，在 Colab 端到端产出 4000+ 字 × 4 异形 `.hwfont` 文件，拖入本地 UI 即时生效 |
+| **P4：文档解析与原版套打** | `DocxStructuredParser`（pandoc + Chart XML）、`PdfMinerUParser`（独立子进程 + 12GB 显存管控）、`overlay` 原版坐标套打与底图对位 | 50 页混排学术 PDF 在 NVIDIA GPU 上峰值显存 ≤ 8.5 GB；A4 套打表格实机四角偏差 ≤ 0.5 mm |
+| **P5：Colab AI 笔迹字库构建器** | 采集表生成器、扫描分割与去网格、模板引导笔顺轨迹恢复、少样本风格模型微调与质检导出 Notebook | 仅凭 1 位书写者的 4 页纸面扫描件，在 Colab 端到端产出 4000+ 字 × 4 异形 `.hwfont` 文件，拖入本地 UI 即时生效 |
 | **P6：实机验收与打包** | 2+ 位不同书写者实机端到端验收（热插拔切换、混排作业/报告多页写完）、`uv`/安装包与一键启动脚本、操作手册 | 达成 §19.2 全部非功能指标，可交付日常使用 |

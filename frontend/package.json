@@ -1,7 +1,9 @@
 {
-  "name": "handwrite-workbench",
+  "name": "inkcraft-workbench",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "license": "Apache-2.0",
+  "author": "muyangplus",
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173",

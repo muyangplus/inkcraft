@@ -6,9 +6,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 import pytest
 
-from handwrite.api.schemas import LayoutConfig
-from handwrite.docparse.docir import DocBlock, DocIR, DocLine, DocPageInfo, DocSource, TextInline
-from handwrite.docparse.formula_ocr import (
+from inkcraft.api.schemas import LayoutConfig
+from inkcraft.docparse.docir import DocBlock, DocIR, DocLine, DocPageInfo, DocSource, TextInline
+from inkcraft.docparse.formula_ocr import (
     _OcrBox,
     _PdfSpan,
     _align_cjk_phrase_with_lexicon,
@@ -18,16 +18,16 @@ from handwrite.docparse.formula_ocr import (
     _split_stacked_rows,
     build_cjk_lexicon,
 )
-from handwrite.docparse.pdf_paragraph import (
+from inkcraft.docparse.pdf_paragraph import (
     PageTypographyProfile,
     RawPdfLine,
     _join_line_texts,
     merge_cross_page_paragraphs,
     reconstruct_page_paragraphs,
 )
-from handwrite.docparse.pdf_parser import parse_pdf
-from handwrite.layout.composer import compose_document
-from handwrite.writers.registry import WriterRegistry
+from inkcraft.docparse.pdf_parser import parse_pdf
+from inkcraft.layout.composer import compose_document
+from inkcraft.writers.registry import WriterRegistry
 
 ROOT = Path(__file__).resolve().parents[2]
 SAMPLE_PDF = ROOT / "source" / "4-实验教学指导书.pdf"

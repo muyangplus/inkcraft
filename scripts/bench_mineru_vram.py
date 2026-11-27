@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""RTX 4070 Super (12GB) VRAM peak monitor & MinerU `pipeline` chunked benchmark script.
+"""12 GB NVIDIA GPU VRAM peak monitor & MinerU `pipeline` chunked benchmark script.
 
 Splits a target PDF into fixed-size page chunks (default 10 pages/chunk via PyMuPDF),
 invokes `mineru -b pipeline` (explicitly enforcing pipeline mode and `MINERU_VIRTUAL_VRAM_SIZE=8`),
 polls `nvidia-smi` every 200ms in a background thread, and validates that peak VRAM stays
-within the 8.5 GB safety budget (`>= 3.5 GB` headroom on a 12 GB RTX 4070 Super).
+within the 8.5 GB safety budget (`>= 3.5 GB` headroom on a 12 GB NVIDIA GPU).
 
 Usage:
     python scripts/bench_mineru_vram.py --pdf sample_50p.pdf
@@ -287,7 +287,7 @@ def run_benchmark(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="RTX 4070 Super 12GB VRAM monitor & MinerU pipeline chunked benchmark."
+        description="12 GB NVIDIA GPU VRAM monitor & MinerU pipeline chunked benchmark."
     )
     parser.add_argument("--pdf", type=Path, default=None, help="Input PDF to benchmark.")
     parser.add_argument("--chunk-pages", type=int, default=10, help="Pages per MinerU chunk (default: 10).")

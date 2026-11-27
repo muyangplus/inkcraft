@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  Handwrite Studio - Windows 10/11 One-Click Environment Installer
+  InkCraft - Windows 10/11 One-Click Environment Installer
 .DESCRIPTION
   Installs uv (if missing), provisions standalone Python 3.12, creates .venv,
   installs all backend/hwfont_sdk/hwbuilder dependencies, configures workspace .pth,
@@ -19,7 +19,7 @@ $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  墨迹工坊 (Handwrite Studio) · Windows 环境一键安装程序" -ForegroundColor Cyan
+Write-Host "  墨迹工坊 InkCraft · Windows 环境一键安装程序" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "[路径] $Root"
 
@@ -80,10 +80,10 @@ if ($UseChinaMirror) {
 }
 & uv @pipArgs
 
-# 4. Write workspace .pth so `python -m handwrite` & `python -m hwbuilder` work everywhere
+# 4. Write workspace .pth so `python -m inkcraft` & `python -m hwbuilder` work everywhere
 Write-Host "`n[4/5] 正在注册本地工作区包 (hwfont_sdk / backend / colab_builder)..." -ForegroundColor Cyan
 $sitePackages = Join-Path $venvDir "Lib\site-packages"
-$pthFile = Join-Path $sitePackages "handwrite_workspace.pth"
+$pthFile = Join-Path $sitePackages "inkcraft_workspace.pth"
 $pthContent = @(
     (Join-Path $Root "packages\hwfont_sdk"),
     (Join-Path $Root "backend"),
@@ -118,16 +118,16 @@ if ($RebuildFrontend -or (-not (Test-Path $distIndex))) {
 Write-Host "`n[5/5] 正在执行 Windows 环境自检..." -ForegroundColor Cyan
 & $venvPy -c @"
 import sys, serial, fitz, docx, shapely, fastapi, uvicorn
-import hwfont_sdk, handwrite, hwbuilder
+import hwfont_sdk, inkcraft, hwbuilder
 from hwbuilder.local_runner import probe_capabilities
 caps = probe_capabilities()
 print('[OK] Python:', sys.version.split()[0])
-print('[OK] Core modules loaded: hwfont_sdk, handwrite, hwbuilder, pyserial, pymupdf, shapely')
+print('[OK] Core modules loaded: hwfont_sdk, inkcraft, hwbuilder, pyserial, pymupdf, shapely')
 print('[OK] GPU Probe:', caps.get('gpu_name') or 'CPU mode', 'VRAM(MB):', caps.get('vram_mb'))
 "@
 
 Write-Host "`n============================================================" -ForegroundColor Green
 Write-Host "  安装完成！双击根目录「启动墨迹工坊.bat」即可打开工作台。" -ForegroundColor Green
-Write-Host "  如需在 RTX 4070 Super 上启用本地 MinerU GPU 解析 PDF，" -ForegroundColor Green
-Write-Host "  可再双击「安装MinerU_4070Super_Windows.bat」。" -ForegroundColor Green
+Write-Host "  如需在 NVIDIA GPU 上启用本地 MinerU GPU 解析 PDF，" -ForegroundColor Green
+Write-Host "  可再双击「安装MinerU_GPU解析.bat」。" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green

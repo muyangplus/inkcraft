@@ -3,9 +3,11 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "handwrite-backend"
-version = "1.0.0"
-description = "Standalone AI multi-writer handwriting & GRBL writing arm host backend."
+name = "inkcraft-backend"
+version = "2.0.0"
+description = "InkCraft: AI multi-writer handwriting layout & GRBL pen-plotter host backend."
+license = { text = "Apache-2.0" }
+authors = [{ name = "muyangplus" }]
 requires-python = ">=3.11"
 dependencies = [
     "hwfont-sdk",
@@ -33,4 +35,4 @@ ocr = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["handwrite*"]
+include = ["inkcraft*"]

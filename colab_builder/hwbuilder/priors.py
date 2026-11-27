@@ -12,7 +12,7 @@ import numpy as np
 @lru_cache(maxsize=1)
 def _load_builtin_priors_cached() -> dict[str, tuple[np.ndarray, ...]]:
     BUILTIN_GLYPHS = None
-    for mod_name in ("hwbuilder.hershey_fallback", "handwrite.writers.fallback.hershey"):
+    for mod_name in ("hwbuilder.hershey_fallback", "inkcraft.writers.fallback.hershey"):
         try:
             mod = __import__(mod_name, fromlist=["BUILTIN_GLYPHS"])
             BUILTIN_GLYPHS = getattr(mod, "BUILTIN_GLYPHS", None)

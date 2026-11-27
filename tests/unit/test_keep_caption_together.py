@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from PIL import Image
 
-from handwrite.api.schemas import LayoutConfig
-from handwrite.docparse.docir import (
+from inkcraft.api.schemas import LayoutConfig
+from inkcraft.docparse.docir import (
     ChartData,
     DocBlock,
     DocIR,
@@ -16,8 +16,8 @@ from handwrite.docparse.docir import (
     TableData,
     TextInline,
 )
-from handwrite.layout.composer import compose_document
-from handwrite.writers.registry import WriterRegistry
+from inkcraft.layout.composer import compose_document
+from inkcraft.writers.registry import WriterRegistry
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def _load_reader():
     reg = WriterRegistry(ROOT / "fonts")
     reg.rescan()
-    reader = reg.get("personal") or reg.get("lin_kaishu") or reg.get(reg.active_writer_id or "")
+    reader = reg.get("lin_kaishu") or reg.get(reg.active_writer_id or "")
     assert reader is not None
     return reader
 

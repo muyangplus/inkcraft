@@ -6,7 +6,7 @@ Provides:
   - `build_synthetic_scans(manifest, ...)`: Renders realistic synthetic filled scans for demo/testing
   - `run_local_font_build(...)`: End-to-end local pipeline (`segment` -> `skeleton_align` ->
     `SDTTrainer` (GPU) or `LocalStyleTransferAugmentor` (CPU) -> `qc_export`) with stage callbacks
-  - `package_colab_bundle(...)`: Creates a self-contained `handwrite_colab_bundle.zip` ready to
+  - `package_colab_bundle(...)`: Creates a self-contained `inkcraft_colab_bundle.zip` ready to
     upload to Google Drive / Colab with all 3 notebooks, `hwbuilder` + `hwfont_sdk`, config,
     manifest, and scan images.
 """
@@ -291,7 +291,7 @@ class LocalBuildConfig:
 
     writer_name: str
     writer_alias: str = ""
-    author: str = "Handwrite Local Builder"
+    author: str = "InkCraft Local Builder"
     version: str = "1.0.0"
     style_tags: list[str] = field(default_factory=list)
     engine: BuildEngine = "auto"
@@ -645,15 +645,15 @@ def package_colab_bundle(
         "has_manifest": manifest_bytes is not None,
     }
 
-    readme_colab = f"""# Handwrite Google Colab 云端字体构建包（{writer_name}）
+    readme_colab = f"""# 墨迹工坊 Google Colab 笔迹字库构建包（{writer_name}）
 
 ## 快速步骤
-1. 解压本压缩包，将整个文件夹上传至 Google Drive：`MyDrive/handwrite_builder/{writer_name}/`
+1. 解压本压缩包，将整个文件夹上传至 Google Drive：`MyDrive/inkcraft_builder/{writer_name}/`
 2. 在 Google Colab 中依次打开 `notebooks/` 下的 Notebook（建议运行时选择 **T4 / L4 GPU**）：
    - `01_generate_sheets.ipynb`：若尚未打印采集表，可重新生成 A4 PDF 与 `manifest.json`；
    - `02_scan_to_trajectories.ipynb`：对 `02_scans/` 下的扫描件执行 ArUco 透视校正、去网格切片、导出 `review.html` 复核并执行 TPS 笔顺恢复；
    - `03_train_and_export.ipynb`：在 Colab GPU 上执行 SDT-LoRA 少样本微调，通过质检门禁后导出 `{writer_name}_v1.0.hwfont`。
-3. 下载导出的 `.hwfont` 文件，回到本地 Handwrite 工作台拖入「书写者管理」或直接导入即可热插拔写字。
+3. 下载导出的 `.hwfont` 文件，回到本地墨迹工坊工作台拖入「书写者」或直接导入即可热插拔写字。
 """
 
     with zipfile.ZipFile(buf, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
@@ -681,7 +681,7 @@ def package_colab_bundle(
                     wrote_hershey = True
                 zf.write(py_file, arcname=f"hwbuilder/{rel_py}")
         if not wrote_hershey:
-            hershey_src = root / "backend" / "handwrite" / "writers" / "fallback" / "hershey.py"
+            hershey_src = root / "backend" / "inkcraft" / "writers" / "fallback" / "hershey.py"
             if hershey_src.is_file():
                 zf.write(hershey_src, arcname="hwbuilder/hershey_fallback.py")
 
