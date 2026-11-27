@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title Handwrite Studio - MinerU RTX 4070 Super GPU Setup
+title InkCraft - MinerU NVIDIA GPU GPU Setup
 echo Starting MinerU Pipeline GPU Installer (12GB VRAM Safe Mode)...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0windows\install_mineru_gpu_windows.ps1" -UseChinaMirror
 if %ERRORLEVEL% NEQ 0 (

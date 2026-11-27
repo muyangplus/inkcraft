@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
-title Handwrite Studio - Windows Environment Setup
-echo Starting Handwrite Studio Windows Installer...
+title InkCraft - Windows Environment Setup
+echo Starting InkCraft Windows Installer...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0windows\install_windows.ps1" -UseChinaMirror
 if %ERRORLEVEL% NEQ 0 (
     echo.

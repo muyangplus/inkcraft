@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title Handwrite Studio - GRBL Writing Arm Workbench
+title InkCraft - GRBL Writing Machine Workbench
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0windows\start_windows.ps1"
 if %ERRORLEVEL% NEQ 0 (
     echo.

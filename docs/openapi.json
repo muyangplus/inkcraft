@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Handwrite GRBL Writing Arm Host API",
+    "title": "InkCraft API",
     "description": "Standalone AI Multi-Writer Handwriting & GRBL Writing Arm Host System (Contract v1)",
     "version": "2.0.0"
   },

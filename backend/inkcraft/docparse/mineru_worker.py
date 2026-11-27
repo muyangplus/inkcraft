@@ -17,7 +17,7 @@ import pymupdf as fitz
 
 logger = logging.getLogger(__name__)
 
-# Global GPU concurrency guard: strictly 1 MinerU subprocess at a time on RTX 4070 Super (12GB)
+# Global GPU concurrency guard: strictly 1 MinerU subprocess at a time on 12 GB NVIDIA GPU
 _GPU_SEMAPHORE = threading.Semaphore(1)
 
 FORBIDDEN_BACKENDS = frozenset(

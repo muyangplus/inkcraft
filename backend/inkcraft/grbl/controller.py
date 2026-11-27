@@ -937,7 +937,7 @@ class MachineController(_ControllerJobsMixin, _ControllerIOMixin):
             "alarm",
             {
                 "code": "ESTOP",
-                "message": "急停已触发：已发送 0x18 软复位并确保抬笔，请检查机械臂与纸面后点击解锁",
+                "message": "急停已触发：已发送 0x18 软复位并确保抬笔，请检查写字机与纸面后点击解锁",
                 "severity": "critical",
             },
         )

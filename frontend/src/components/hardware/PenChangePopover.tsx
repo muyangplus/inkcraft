@@ -26,7 +26,7 @@ export const PenChangePopover: React.FC = () => {
 
       <div className="modal-body" style={{ padding: '12px 13px', gap: 10 }}>
         <div style={{ fontSize: 12, lineHeight: 1.55, color: 'var(--text-secondary)' }}>
-          机械臂已记录精确断点坐标并抬笔移至换笔安全泊位。请更换新笔芯，可使用下方按钮微触验证笔尖贴纸高度：
+          写字机已记录精确断点坐标并抬笔移至换笔安全泊位。请更换新笔芯，可使用下方按钮微触验证笔尖贴纸高度：
         </div>
         <div className="grid-2">
           <button className="btn btn-sm" onClick={() => void setPen('up')}>

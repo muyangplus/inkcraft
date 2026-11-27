@@ -133,10 +133,10 @@ export const AboutSettingsModal: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--text-primary)' }}>
-                  墨迹工坊 · Handwrite Studio
+                  墨迹工坊 · InkCraft
                 </div>
                 <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', marginTop: 2 }}>
-                  独立 AI 多人笔迹合成 · GRBL 单线矢量写字机械臂上位机
+                  多书写者笔迹排版与 GRBL 写字机上位机
                 </div>
               </div>
             </div>

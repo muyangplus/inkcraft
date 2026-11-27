@@ -336,7 +336,7 @@ export const PaperGeometryCard: React.FC = () => {
       </div>
 
       <div className="row-between" style={{ fontSize: 11.5, color: 'var(--text-secondary)' }}>
-        <span>机械臂同步绘制格线 (ruled.draw)</span>
+        <span>写字机同步绘制格线 (ruled.draw)</span>
         <label className="switch">
           <input
             type="checkbox"

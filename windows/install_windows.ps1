@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  Handwrite Studio - Windows 10/11 One-Click Environment Installer
+  InkCraft - Windows 10/11 One-Click Environment Installer
 .DESCRIPTION
   Installs uv (if missing), provisions standalone Python 3.12, creates .venv,
   installs all backend/hwfont_sdk/hwbuilder dependencies, configures workspace .pth,
@@ -19,7 +19,7 @@ $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  墨迹工坊 (Handwrite Studio) · Windows 环境一键安装程序" -ForegroundColor Cyan
+Write-Host "  墨迹工坊 InkCraft · Windows 环境一键安装程序" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "[路径] $Root"
 
@@ -128,6 +128,6 @@ print('[OK] GPU Probe:', caps.get('gpu_name') or 'CPU mode', 'VRAM(MB):', caps.g
 
 Write-Host "`n============================================================" -ForegroundColor Green
 Write-Host "  安装完成！双击根目录「启动墨迹工坊.bat」即可打开工作台。" -ForegroundColor Green
-Write-Host "  如需在 RTX 4070 Super 上启用本地 MinerU GPU 解析 PDF，" -ForegroundColor Green
-Write-Host "  可再双击「安装MinerU_4070Super_Windows.bat」。" -ForegroundColor Green
+Write-Host "  如需在 NVIDIA GPU 上启用本地 MinerU GPU 解析 PDF，" -ForegroundColor Green
+Write-Host "  可再双击「安装MinerU_GPU解析.bat」。" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green

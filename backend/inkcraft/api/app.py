@@ -73,7 +73,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             ctx.shutdown()
 
     app = FastAPI(
-        title="Handwrite GRBL Writing Arm Host API",
+        title="InkCraft API",
         version=__version__,
         description=f"Standalone AI Multi-Writer Handwriting & GRBL Writing Arm Host System (Contract v{CONTRACT_VERSION})",
         lifespan=lifespan,

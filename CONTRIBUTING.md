@@ -1,6 +1,6 @@
 # 参与贡献
 
-感谢你愿意改进墨迹工坊 InkCraft！提交 Issue 或 Pull Request 前请先阅读本指南。
+感谢参与改进墨迹工坊 InkCraft。提交 Issue 或 Pull Request 前请先阅读本指南。
 
 ## 提问与反馈
 

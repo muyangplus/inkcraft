@@ -212,7 +212,7 @@ def _builtin_presets() -> list[LayoutPreset]:
         ),
         LayoutPreset(
             preset_id="fast_draft",
-            name="极速草稿 / 机械臂试写",
+            name="极速草稿 / 写字机试写",
             category="draft",
             description="稀疏图表排线与更大字号，缩短笔尖落笔与空移时间，适合快速打样校准",
             tags=["快速打样", "大字号", "稀疏排线"],
@@ -498,7 +498,7 @@ async def get_layout_page_gcode(
     ctx: AppContext = request.app.state.ctx
     profile = ctx.db.get_profile(profile_id) if profile_id else ctx.get_active_profile()
     if profile is None:
-        raise ApiError(404, "PROFILE_NOT_FOUND", f"未找到机器配置: {profile_id}")
+        raise ApiError(404, "PROFILE_NOT_FOUND", f"未找到机台档案: {profile_id}")
 
     compiled = await asyncio.to_thread(
         ctx.compile_layout_page,

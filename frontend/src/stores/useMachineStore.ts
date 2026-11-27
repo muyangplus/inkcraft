@@ -209,7 +209,7 @@ export const useMachineStore = create<MachineStoreState>((set, get) => ({
       case 'pen_change_ready':
         set({ jobState: 'PEN_CHANGE', machineState: 'PEN_CHANGE' });
         vp.setPenChangeOpen(true);
-        vp.pushToast('机械臂已到达换笔安全泊位', 'warn');
+        vp.pushToast('写字机已到达换笔安全泊位', 'warn');
         break;
       case 'resumed':
         set({ jobState: 'STREAMING' });
