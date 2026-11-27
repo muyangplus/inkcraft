@@ -1,0 +1,171 @@
+/* ============================================================================
+   2026 Flagship Studio Design Tokens
+   Default: Clean Luminous Daylight Studio (Linear / Figma / Apple Studio craft)
+   Toggleable: Sleek Obsidian Slate Dark Mode ([data-theme="dark"])
+   ============================================================================ */
+
+:root,
+:root[data-theme="light"],
+:root[data-theme="daylight-studio"] {
+  --font-sans: "Inter", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", "IBM Plex Mono", Menlo, Consolas, monospace;
+
+  /* App Surfaces */
+  --bg-stage: #E8ECF2;
+  --bg-stage-grid: #DCE2EC;
+  --bg-shell: #FFFFFF;
+  --bg-panel: #F4F6F9;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --bg-elevated: #FFFFFF;
+  --bg-input: #F8FAFC;
+  --bg-subtle: #EEF2F7;
+
+  /* Borders & Elevation */
+  --border-subtle: #E8EDF4;
+  --border-default: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --border-focus: #4F46E5;
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.16), 0 6px 18px rgba(15, 23, 42, 0.08);
+
+  /* Typography */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-inverse: #FFFFFF;
+
+  /* Rulers & Floating Glass HUD */
+  --ruler-bg: #F1F5F9;
+  --ruler-tick: #CBD5E1;
+  --ruler-text: #64748B;
+  --float-bg: rgba(255, 255, 255, 0.90);
+  --float-border: rgba(203, 213, 225, 0.85);
+
+  /* Archival Paper & Ink */
+  --paper-surface: #FFFEFA;
+  --paper-margin: rgba(79, 70, 229, 0.22);
+  --paper-rule: rgba(148, 163, 184, 0.34);
+  --paper-shadow: 0 20px 48px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.06);
+
+  --ink-indigo: #1B365D;
+  --ink-carbon: #181B20;
+  --ink-royal: #1D4ED8;
+  --ink-crimson: #B91C1C;
+  --stroke-pending: rgba(71, 85, 105, 0.28);
+  --stroke-active: #4F46E5;
+  --stroke-travel: rgba(217, 119, 6, 0.58);
+  --stroke-frame: #0891B2;
+  --stroke-fallback: #E11D48;
+  --overlay-selected: #0284C7;
+
+  /* Semantic Palette */
+  --accent-primary: #4F46E5;
+  --accent-hover: #4338CA;
+  --accent-soft: rgba(79, 70, 229, 0.09);
+  --accent-ring: rgba(79, 70, 229, 0.22);
+
+  --rule-a-bg: rgba(79, 70, 229, 0.08);
+  --rule-a-border: rgba(79, 70, 229, 0.32);
+  --rule-a-text: #4338CA;
+
+  --rule-b-bg: rgba(13, 148, 136, 0.08);
+  --rule-b-border: rgba(13, 148, 136, 0.34);
+  --rule-b-text: #0F766E;
+
+  --state-ready: #10B981;
+  --state-ready-text: #047857;
+  --state-running: #4F46E5;
+  --state-warn: #D97706;
+  --state-danger: #E11D48;
+
+  --estop-bg: #E11D48;
+  --estop-hover: #BE123C;
+  --estop-ring: rgba(225, 29, 72, 0.22);
+
+  --banner-danger-bg: #FFF1F2;
+  --banner-danger-border: #FDA4AF;
+  --banner-danger-text: #9F1239;
+  --banner-warn-bg: #FFFBEB;
+  --banner-warn-border: #FCD34D;
+  --banner-warn-text: #92400E;
+
+  --cyan-text: #0E7490;
+  --fallback-text: #BE123C;
+  --fallback-bg: #FFF1F2;
+  --fallback-border: #FECDD3;
+}
+
+/* Sleek Obsidian Slate Dark Theme */
+:root[data-theme="dark"],
+:root[data-theme="precision-dark"] {
+  --bg-stage: #0B0E14;
+  --bg-stage-grid: #141923;
+  --bg-shell: #0D1017;
+  --bg-panel: #111520;
+  --bg-card: #151923;
+  --bg-card-hover: #1B2130;
+  --bg-elevated: #191F2E;
+  --bg-input: #0E121A;
+  --bg-subtle: #1A2030;
+
+  --border-subtle: #1E2434;
+  --border-default: #232A3B;
+  --border-strong: #333E57;
+  --border-focus: #6366F1;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.32);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.48);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.65);
+
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-inverse: #0D1017;
+
+  --ruler-bg: #111520;
+  --ruler-tick: #334155;
+  --ruler-text: #64748B;
+  --float-bg: rgba(21, 25, 35, 0.90);
+  --float-border: rgba(51, 62, 87, 0.85);
+
+  --paper-surface: #FAF8F2;
+  --paper-shadow: 0 22px 54px rgba(0, 0, 0, 0.62), 0 3px 10px rgba(0, 0, 0, 0.42);
+
+  --accent-primary: #6366F1;
+  --accent-hover: #4F46E5;
+  --accent-soft: rgba(99, 102, 241, 0.16);
+  --accent-ring: rgba(99, 102, 241, 0.28);
+
+  --rule-a-bg: rgba(99, 102, 241, 0.14);
+  --rule-a-border: rgba(129, 140, 248, 0.42);
+  --rule-a-text: #A5B4FC;
+
+  --rule-b-bg: rgba(20, 184, 166, 0.14);
+  --rule-b-border: rgba(45, 212, 191, 0.42);
+  --rule-b-text: #5EEAD4;
+
+  --state-ready: #22C55E;
+  --state-ready-text: #4ADE80;
+  --state-running: #6366F1;
+  --state-warn: #F59E0B;
+  --state-danger: #F43F5E;
+
+  --estop-bg: #E11D48;
+  --estop-hover: #BE123C;
+  --estop-ring: rgba(244, 63, 94, 0.34);
+
+  --banner-danger-bg: rgba(225, 29, 72, 0.16);
+  --banner-danger-border: rgba(244, 63, 94, 0.48);
+  --banner-danger-text: #FDA4AF;
+  --banner-warn-bg: rgba(245, 158, 11, 0.14);
+  --banner-warn-border: rgba(245, 158, 11, 0.45);
+  --banner-warn-text: #FCD34D;
+
+  --cyan-text: #22D3EE;
+  --fallback-text: #FDA4AF;
+  --fallback-bg: rgba(225, 29, 72, 0.12);
+  --fallback-border: rgba(244, 63, 94, 0.38);
+}

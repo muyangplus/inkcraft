@@ -1,0 +1,168 @@
+"""Symbol, operator, function, accent, and style metric tables for math typesetting."""
+
+from __future__ import annotations
+
+from typing import Literal
+
+MathStyle = Literal["D", "T", "S", "SS"]
+AtomKind = Literal["ord", "op", "bin", "rel", "open", "close", "punct", "inner"]
+
+STYLE_SCALE: dict[MathStyle, float] = {"D": 1.0, "T": 1.0, "S": 0.64, "SS": 0.46}
+
+GREEK_AND_SYMBOLS: dict[str, tuple[str, AtomKind, bool]] = {
+    r"\alpha": ("α", "ord", True),
+    r"\beta": ("β", "ord", True),
+    r"\gamma": ("γ", "ord", True),
+    r"\delta": ("δ", "ord", True),
+    r"\epsilon": ("ε", "ord", True),
+    r"\varepsilon": ("ε", "ord", True),
+    r"\zeta": ("ζ", "ord", True),
+    r"\eta": ("η", "ord", True),
+    r"\theta": ("θ", "ord", True),
+    r"\vartheta": ("θ", "ord", True),
+    r"\iota": ("ι", "ord", True),
+    r"\kappa": ("κ", "ord", True),
+    r"\lambda": ("λ", "ord", True),
+    r"\mu": ("μ", "ord", True),
+    r"\nu": ("ν", "ord", True),
+    r"\xi": ("ξ", "ord", True),
+    r"\pi": ("π", "ord", True),
+    r"\varpi": ("π", "ord", True),
+    r"\rho": ("ρ", "ord", True),
+    r"\sigma": ("σ", "ord", True),
+    r"\tau": ("τ", "ord", True),
+    r"\upsilon": ("υ", "ord", True),
+    r"\phi": ("φ", "ord", True),
+    r"\varphi": ("φ", "ord", True),
+    r"\chi": ("χ", "ord", True),
+    r"\psi": ("ψ", "ord", True),
+    r"\omega": ("ω", "ord", True),
+    r"\Gamma": ("Γ", "ord", False),
+    r"\Delta": ("Δ", "ord", False),
+    r"\Theta": ("Θ", "ord", False),
+    r"\Lambda": ("Λ", "ord", False),
+    r"\Xi": ("Ξ", "ord", False),
+    r"\Pi": ("Π", "ord", False),
+    r"\Sigma": ("Σ", "ord", False),
+    r"\Phi": ("Φ", "ord", False),
+    r"\Psi": ("Ψ", "ord", False),
+    r"\Omega": ("Ω", "ord", False),
+    r"\infty": ("∞", "ord", False),
+    r"\partial": ("∂", "ord", False),
+    r"\nabla": ("∇", "ord", False),
+    r"\hbar": ("h", "ord", True),
+    r"\pm": ("±", "bin", False),
+    r"\mp": ("±", "bin", False),
+    r"\times": ("×", "bin", False),
+    r"\div": ("÷", "bin", False),
+    r"\cdot": ("·", "bin", False),
+    r"\ast": ("*", "bin", False),
+    r"\star": ("*", "bin", False),
+    r"\leq": ("≤", "rel", False),
+    r"\le": ("≤", "rel", False),
+    r"\geq": ("≥", "rel", False),
+    r"\ge": ("≥", "rel", False),
+    r"\neq": ("≠", "rel", False),
+    r"\ne": ("≠", "rel", False),
+    r"\approx": ("≈", "rel", False),
+    r"\equiv": ("=", "rel", False),
+    r"\sim": ("~", "rel", False),
+    r"\propto": ("~", "rel", False),
+    r"\ll": ("<", "rel", False),
+    r"\gg": (">", "rel", False),
+    r"\in": ("∈", "rel", False),
+    r"\notin": ("∉", "rel", False),
+    r"\subset": ("⊂", "rel", False),
+    r"\subseteq": ("⊆", "rel", False),
+    r"\cup": ("U", "bin", False),
+    r"\cap": ("∩", "bin", False),
+    r"\to": ("→", "rel", False),
+    r"\rightarrow": ("→", "rel", False),
+    r"\longrightarrow": ("→", "rel", False),
+    r"\leftarrow": ("←", "rel", False),
+    r"\Rightarrow": ("→", "rel", False),
+    r"\Leftrightarrow": ("↔", "rel", False),
+    r"\degree": ("°", "ord", False),
+    r"\circ": ("°", "bin", False),
+    r"\ldots": ("…", "ord", False),
+    r"\cdots": ("…", "ord", False),
+    r"\dots": ("…", "ord", False),
+    r"\{": ("{", "open", False),
+    r"\}": ("}", "close", False),
+    r"\%": ("%", "ord", False),
+    r"\_": ("_", "ord", False),
+    r"\&": ("&", "ord", False),
+    r"\#": ("#", "ord", False),
+    r"\$": ("$", "ord", False),
+}
+
+FUNC_COMMANDS = frozenset(
+    {
+        r"\sin",
+        r"\cos",
+        r"\tan",
+        r"\cot",
+        r"\sec",
+        r"\csc",
+        r"\arcsin",
+        r"\arccos",
+        r"\arctan",
+        r"\sinh",
+        r"\cosh",
+        r"\tanh",
+        r"\log",
+        r"\ln",
+        r"\exp",
+        r"\max",
+        r"\min",
+        r"\sup",
+        r"\inf",
+        r"\det",
+        r"\gcd",
+        r"\Pr",
+        r"\arg",
+    }
+)
+
+BIG_OP_COMMANDS = frozenset({r"\sum", r"\prod", r"\int", r"\iint", r"\oint", r"\lim"})
+ACCENT_COMMANDS = frozenset(
+    {r"\overline", r"\underline", r"\hat", r"\bar", r"\vec", r"\tilde", r"\dot", r"\ddot"}
+)
+SPACE_COMMANDS: dict[str, float] = {
+    r"\,": 3.0 / 18.0,
+    r"\:": 4.0 / 18.0,
+    r"\;": 5.0 / 18.0,
+    r"\ ": 5.0 / 18.0,
+    r"\quad": 1.0,
+    r"\qquad": 2.0,
+    r"\!": -3.0 / 18.0,
+}
+IGNORED_SIZING_CMDS = frozenset(
+    {
+        r"\big",
+        r"\Big",
+        r"\bigg",
+        r"\Bigg",
+        r"\bigl",
+        r"\bigr",
+        r"\Bigl",
+        r"\Bigr",
+        r"\limits",
+        r"\nolimits",
+        r"\displaystyle",
+        r"\textstyle",
+        r"\cal",
+        r"\rm",
+        r"\bf",
+        r"\it",
+        r"\tiny",
+        r"\small",
+        r"\footnotesize",
+        r"\normalsize",
+        r"\large",
+        r"\Large",
+    }
+)
+RAW_TEXT_COMMANDS = frozenset(
+    {r"\text", r"\textbf", r"\textit", r"\mathrm", r"\mathbf", r"\operatorname", r"\mbox", r"\begin", r"\end"}
+)

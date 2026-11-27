@@ -1,0 +1,31 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-stage);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.selectable {
+  user-select: text;
+}
+

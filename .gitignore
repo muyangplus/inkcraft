@@ -1,0 +1,40 @@
+# Python
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Runtime data / build outputs
+data/
+dist/
+runtime/
+*.db
+*.db-wal
+*.db-shm
+.env
+config/mineru.env
+
+# Third-party proprietary software & licence files (never commit)
+source/奎享雕刻/
+source/*.pdf
+
+# Personal handwriting scans and models derived from them
+source/scans/
+fonts/*.hwfont
+!fonts/lin_kaishu.hwfont
+!fonts/chen_xingshu.hwfont
+!fonts/su_engineering.hwfont
+cuda_font_kit/0[1-4]_*/
+cuda_font_kit/03_trajectories.json
+cuda_font_kit/output/
+cuda_font_kit/priors/graphics.txt
+cuda_font_kit/hwbuilder/
+cuda_font_kit/hwfont_sdk/
+cuda_font_kit/*.ipynb

@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "handwrite-backend"
+version = "1.0.0"
+description = "Standalone AI multi-writer handwriting & GRBL writing arm host backend."
+requires-python = ">=3.11"
+dependencies = [
+    "hwfont-sdk",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.0",
+    "python-multipart>=0.0.9",
+    "websockets>=13.0",
+    "numpy>=1.26",
+    "lxml>=5.0",
+    "pillow>=10.0",
+    "python-docx>=1.1",
+    "pymupdf>=1.24",
+    "pyserial>=3.5",
+    "shapely>=2.0",
+    "watchdog>=4.0",
+]
+
+[project.optional-dependencies]
+ocr = [
+    "onnxruntime>=1.18.0",
+    "rapidocr-onnxruntime>=1.4.0",
+    "rapid-latex-ocr>=0.0.9",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["handwrite*"]

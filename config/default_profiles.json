@@ -1,0 +1,52 @@
+[
+  {
+    "profile_id": "corexy_servo_a4",
+    "name": "CoreXY A4 舵机写字机 (GRBL 1.1)",
+    "baud": 115200,
+    "pen": {
+      "mode": "servo",
+      "servo_up": "M5",
+      "servo_down": "M3 S90",
+      "dwell_ms": 120,
+      "z_up_mm": 4.0,
+      "z_down_mm": 0.0,
+      "z_feed": 1200.0
+    },
+    "workspace_mm": { "x": 220.0, "y": 310.0 },
+    "pen_change_pos_mm": { "x": 10.0, "y": 10.0 },
+    "paper_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "origin": "top_left",
+    "invert_x": false,
+    "invert_y": false,
+    "feed_draw": 2400.0,
+    "feed_travel": 5000.0,
+    "jog_feed": 3000.0,
+    "status_hz": 10.0,
+    "rx_buffer": 128
+  },
+  {
+    "profile_id": "gantry_z_a3",
+    "name": "龙门 A3 步进 Z 轴写字机 (GRBL 1.1)",
+    "baud": 115200,
+    "pen": {
+      "mode": "z",
+      "servo_up": "M5",
+      "servo_down": "M3 S90",
+      "dwell_ms": 80,
+      "z_up_mm": 5.0,
+      "z_down_mm": 0.0,
+      "z_feed": 1200.0
+    },
+    "workspace_mm": { "x": 310.0, "y": 430.0 },
+    "pen_change_pos_mm": { "x": 15.0, "y": 15.0 },
+    "paper_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "origin": "top_left",
+    "invert_x": false,
+    "invert_y": false,
+    "feed_draw": 2600.0,
+    "feed_travel": 5500.0,
+    "jog_feed": 3500.0,
+    "status_hz": 10.0,
+    "rx_buffer": 128
+  }
+]
