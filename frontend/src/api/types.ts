@@ -1,4 +1,4 @@
-// Contract v1 TypeScript Types (aligned with backend/handwrite/api/schemas.py)
+// Contract v1 TypeScript Types (aligned with backend/inkcraft/api/schemas.py)
 // Re-export barrel preserving backwards compatibility across all frontend imports.
 
 export * from './domain/common';

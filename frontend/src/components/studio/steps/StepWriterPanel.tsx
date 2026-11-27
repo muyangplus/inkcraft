@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useViewportStore } from '../../../stores/useViewportStore';
 import { NeatnessMasterCard } from '../style/NeatnessMasterCard';
+import { WriterMixCard } from '../style/WriterMixCard';
 import { WriterListPanel } from '../WriterListPanel';
 
 export const StepWriterPanel: React.FC = () => {
@@ -11,6 +12,7 @@ export const StepWriterPanel: React.FC = () => {
     <div className="panel-scroll">
       <WriterListPanel embedded />
       <NeatnessMasterCard />
+      <WriterMixCard />
 
       <div className="step-next-bar">
         <button

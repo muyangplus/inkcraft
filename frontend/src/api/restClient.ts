@@ -15,6 +15,7 @@ import type {
   ImportPreviewManifest,
   JobDetail,
   JobState,
+  GrblSettingsResponse,
   LayoutConfig,
   LayoutDetail,
   LayoutPreset,
@@ -464,12 +465,47 @@ export const restClient = {
     );
   },
 
+  getGrblSettings(): Promise<GrblSettingsResponse> {
+    return requestJson<GrblSettingsResponse>('/machine/grbl-settings');
+  },
+
+  /** Write firmware `$N=value` parameters; returns the re-read `$$` table. */
+  writeGrblSettings(
+    settings: Record<string, number>,
+  ): Promise<{ written: string[]; settings: Record<string, number> }> {
+    return requestJson('/machine/grbl-settings', {
+      method: 'PUT',
+      body: JSON.stringify({ settings }),
+    });
+  },
+
+  runMachineMacro(index: number): Promise<{ macro: string; lines: string[]; responses: string[] }> {
+    return requestJson(`/machine/macros/${index}/run`, { method: 'POST' });
+  },
+
+  saveLayoutPreset(preset: LayoutPreset): Promise<{ preset: LayoutPreset }> {
+    return requestJson(`/layout/presets/${encodeURIComponent(preset.preset_id)}`, {
+      method: 'PUT',
+      body: JSON.stringify(preset),
+    });
+  },
+
+  deleteLayoutPreset(presetId: string): Promise<{ deleted: boolean }> {
+    return requestJson(`/layout/presets/${encodeURIComponent(presetId)}`, { method: 'DELETE' });
+  },
+
   connectMachine(payload: {
     port: string;
     baud: number;
     profile_id: string;
     mock: boolean;
-  }): Promise<{ machine_state: MachineState; profile_id: string; mock: boolean }> {
+  }): Promise<{
+    machine_state: MachineState;
+    profile_id: string;
+    mock: boolean;
+    port?: string;
+    grbl_settings?: Record<string, number>;
+  }> {
     return requestJson('/machine/connect', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -480,10 +516,10 @@ export const restClient = {
     return requestJson('/machine/disconnect', { method: 'POST' });
   },
 
-  jogMachine(dx: number, dy: number, feed: number): Promise<{ accepted: boolean }> {
+  jogMachine(dx: number, dy: number, feed: number, dz = 0): Promise<{ accepted: boolean }> {
     return requestJson('/machine/jog', {
       method: 'POST',
-      body: JSON.stringify({ dx, dy, feed }),
+      body: JSON.stringify({ dx, dy, dz, feed }),
     });
   },
 

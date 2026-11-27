@@ -190,6 +190,8 @@ export interface LayoutConfig {
   };
   page_rules: PageRulesConfig;
   regions: WritingRegion[];
+  /** 多字体按概率混写：每个字按权重随机选择书写者（奎享「字体混合」）。 */
+  writer_mix: Array<{ writer_id: string; weight: number }>;
 }
 
 export interface WritingRegion {

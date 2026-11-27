@@ -63,9 +63,20 @@ export const ConnectionCard: React.FC = () => {
           onChange={(e) => setSelectedPort(e.target.value)}
         >
           {mock && <option value="MOCK">MOCK-GRBL-1.1 (内置仿真)</option>}
-          {ports.map((p) => (
+          {!mock && (
+            <option value="auto">
+              自动识别串口
+              {ports.find((p) => p.recommended)
+                ? ` → ${ports.find((p) => p.recommended)?.device}`
+                : '（CH340 / CP210x…）'}
+            </option>
+          )}
+          {ports
+            .filter((p) => p.device !== 'MOCK')
+            .map((p) => (
             <option key={p.device} value={p.device}>
-              {p.device} {p.description ? `(${p.description})` : ''}
+              {p.recommended ? '★ ' : ''}
+              {p.device} {p.adapter || p.description ? `(${p.adapter || p.description})` : ''}
             </option>
           ))}
         </select>
