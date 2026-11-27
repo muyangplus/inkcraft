@@ -6,14 +6,14 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from fastapi.testclient import TestClient
 
-from handwrite.api.app import create_app
-from handwrite.api.schemas import ChartConfig, LayoutConfig, PageRuleOverride, TextConfig, WritingRegion
-from handwrite.config import Settings
-from handwrite.docparse.chart_extract import vectorize_raster_image
-from handwrite.docparse.docir import DocBlock, DocIR, DocPageInfo, DocSource, TextInline
-from handwrite.docparse.markdown_codec import docir_to_markdown, markdown_to_docir
-from handwrite.layout.composer import compose_document
-from handwrite.writers.registry import WriterRegistry
+from inkcraft.api.app import create_app
+from inkcraft.api.schemas import ChartConfig, LayoutConfig, PageRuleOverride, TextConfig, WritingRegion
+from inkcraft.config import Settings
+from inkcraft.docparse.chart_extract import vectorize_raster_image
+from inkcraft.docparse.docir import DocBlock, DocIR, DocPageInfo, DocSource, TextInline
+from inkcraft.docparse.markdown_codec import docir_to_markdown, markdown_to_docir
+from inkcraft.layout.composer import compose_document
+from inkcraft.writers.registry import WriterRegistry
 
 ROOT = Path(__file__).resolve().parents[2]
 DEMO_FONT = ROOT / "fonts" / "lin_kaishu.hwfont"

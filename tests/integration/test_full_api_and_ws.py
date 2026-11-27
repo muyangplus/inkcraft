@@ -9,8 +9,8 @@ import zipfile
 
 from fastapi.testclient import TestClient
 
-from handwrite.api.app import create_app
-from handwrite.config import Settings
+from inkcraft.api.app import create_app
+from inkcraft.config import Settings
 
 ROOT = Path(__file__).resolve().parents[2]
 

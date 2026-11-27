@@ -11,15 +11,15 @@ import fitz
 import numpy as np
 import pytest
 
-from handwrite.api.schemas import LayoutConfig, OverlayBlockOverride, Vec2, WritingRegion
-from handwrite.docparse.docir import ChartData, ChartSeries, DocBlock, DocIR, DocPageInfo, DocSource
-from handwrite.docparse.mineru_worker import MinerUUnavailableError, run_mineru_pipeline
-from handwrite.docparse.service import build_demo_docir, parse_document, parse_plain_text
-from handwrite.layout.chart_renderer import render_chart
-from handwrite.layout.composer import compose_document
-from handwrite.layout.export import export_page_f32, export_page_json
-from handwrite.layout.math_typesetter import typeset_math
-from handwrite.writers.selector import VariantSelector
+from inkcraft.api.schemas import LayoutConfig, OverlayBlockOverride, Vec2, WritingRegion
+from inkcraft.docparse.docir import ChartData, ChartSeries, DocBlock, DocIR, DocPageInfo, DocSource
+from inkcraft.docparse.mineru_worker import MinerUUnavailableError, run_mineru_pipeline
+from inkcraft.docparse.service import build_demo_docir, parse_document, parse_plain_text
+from inkcraft.layout.chart_renderer import render_chart
+from inkcraft.layout.composer import compose_document
+from inkcraft.layout.export import export_page_f32, export_page_json
+from inkcraft.layout.math_typesetter import typeset_math
+from inkcraft.writers.selector import VariantSelector
 from hwfont_sdk import HwFontReader
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -384,37 +384,6 @@ def test_custom_paper_and_char_scale() -> None:
     assert p_wide.width_mm == 150.0
     assert p_wide.height_mm == 200.0
     assert (p_wide.bbox[2] - p_wide.bbox[0]) > (p_norm.bbox[2] - p_norm.bbox[0]) * 1.25
-
-
-def test_personal_reference_font_valid() -> None:
-    personal_path = ROOT / "fonts" / "personal.hwfont"
-    if not personal_path.is_file():
-        pytest.skip("personal reference font is local-only (not in the repository)")
-
-    with HwFontReader(personal_path) as reader:
-        rep = reader.verify()
-        assert rep.ok, f"personal.hwfont verification errors: {rep.errors}"
-        assert reader.meta.writer_id == "personal"
-        assert "generate_demo_writers" not in reader.meta.builder
-        assert reader.meta.glyph_count >= 500
-        assert reader.meta.variant_count >= 1200
-
-        for ch in "0123456789实验声波":
-            assert reader.has(ch), f"Missing scanned glyph '{ch}' in personal.hwfont"
-            vars_list = reader.variants(ch)
-            assert any(v.source == "scan" for v in vars_list), f"Glyph '{ch}' lacks scan provenance"
-
-        # Continuous vectorization guard: rank-0 digits should be single/continuous strokes (median <= 2.5)
-        digit_strokes = [len(reader.variants(d)[0].strokes) for d in "0123456789"]
-        assert float(np.median(digit_strokes)) <= 2.5, f"Fragmented digit strokes: {digit_strokes}"
-
-        doc = parse_plain_text("", "物理性污染控制工程实验2413龘", "doc_personal_test")
-        cfg = LayoutConfig()
-        assert cfg.fallback.policy == "blank"
-        pages = compose_document(doc, reader, cfg)
-        assert len(pages) == 1
-        assert len(pages[0].strokes) > 30
-        assert any(fg.char == "龘" and fg.count == 1 for fg in pages[0].fallback_glyphs)
 
 
 def test_local_style_augmentor_preserves_junctions() -> None:

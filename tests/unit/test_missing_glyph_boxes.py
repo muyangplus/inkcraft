@@ -5,11 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 import pytest
 
-from handwrite.api.schemas import FallbackConfig, LayoutConfig, MachineProfile, PageConfig
-from handwrite.docparse.docir import DocBlock, DocIR, DocPageInfo, DocSource, TextInline
-from handwrite.gcode.compiler import compile_page_gcode
-from handwrite.layout.composer import compose_document
-from handwrite.writers.registry import WriterRegistry
+from inkcraft.api.schemas import FallbackConfig, LayoutConfig, MachineProfile, PageConfig
+from inkcraft.docparse.docir import DocBlock, DocIR, DocPageInfo, DocSource, TextInline
+from inkcraft.gcode.compiler import compile_page_gcode
+from inkcraft.layout.composer import compose_document
+from inkcraft.writers.registry import WriterRegistry
 
 ROOT = Path(__file__).resolve().parents[2]
 

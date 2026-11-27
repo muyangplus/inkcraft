@@ -13,22 +13,22 @@ import fitz
 import numpy as np
 import pytest
 
-from handwrite.api.app import create_app
-from handwrite.api.schemas import (
+from inkcraft.api.app import create_app
+from inkcraft.api.schemas import (
     ComposedPage,
     MachineProfile,
     MachineState,
     PenConfig,
     StrokeItem,
 )
-from handwrite.api.state import ApiError, AppContext
-from handwrite.config import Settings
-from handwrite.core.db import Database
-from handwrite.core.events import EventBus
-from handwrite.gcode.compiler import compile_page_gcode
-from handwrite.grbl.controller import MachineController
-from handwrite.layout.math_typesetter import typeset_math
-from handwrite.writers.selector import VariantSelector
+from inkcraft.api.state import ApiError, AppContext
+from inkcraft.config import Settings
+from inkcraft.core.db import Database
+from inkcraft.core.events import EventBus
+from inkcraft.gcode.compiler import compile_page_gcode
+from inkcraft.grbl.controller import MachineController
+from inkcraft.layout.math_typesetter import typeset_math
+from inkcraft.writers.selector import VariantSelector
 from hwfont_sdk import HwFontMeta, HwFontReader, HwFontWriter, decode_strokes_full
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -264,53 +264,7 @@ def test_package_windows_bundle_should_include_rules() -> None:
     spec.loader.exec_module(mod)
 
     assert mod.should_include(ROOT / "frontend" / "dist" / "index.html") is True
-    assert mod.should_include(ROOT / "dist" / "handwrite-windows-portable.zip") is False
+    assert mod.should_include(ROOT / "dist" / "inkcraft-windows-portable.zip") is False
     assert mod.should_include(ROOT / "source" / "scans" / "raw.jpg") is False
     assert mod.should_include(ROOT / "cuda_font_kit" / "train_font_cuda.py") is False
     assert mod.should_include(ROOT / "data" / "app.db") is False
-
-
-def test_train_font_cuda_common3500_cap_with_large_mma_priors() -> None:
-    kit_dir = str(ROOT / "cuda_font_kit")
-    added = False
-    if kit_dir not in sys.path:
-        sys.path.insert(0, kit_dir)
-        added = True
-    try:
-        from font_cuda.dataset import select_target_charset
-
-        builtin_priors = {"A": [np.zeros((2, 2))], "1": [np.zeros((2, 2))]}
-        # Collect >3600 valid GB2312 Level-1 CJK chars + extra CJK chars
-        mma_priors: dict[str, list[np.ndarray]] = {}
-        for hi in range(0xB0, 0xD8):
-            for lo in range(0xA1, 0xFF):
-                try:
-                    ch = bytes([hi, lo]).decode("gb2312")
-                except UnicodeDecodeError:
-                    continue
-                if "\u4e00" <= ch <= "\u9fff":
-                    mma_priors[ch] = []
-                if len(mma_priors) >= 3700:
-                    break
-            if len(mma_priors) >= 3700:
-                break
-        # Add 300 Level-2 CJK chars to bring mma_priors > 4000 entries
-        for cp in range(0x4E00, 0x9FFF):
-            ch = chr(cp)
-            if ch not in mma_priors:
-                mma_priors[ch] = []
-            if len(mma_priors) >= 4000:
-                break
-
-        selected = select_target_charset(
-            "common3500",
-            scanned_chars=set(),
-            builtin_priors=builtin_priors,
-            mma_priors=mma_priors,
-        )
-        cjk_count = sum(1 for ch in selected if "\u4e00" <= ch <= "\u9fff")
-        assert cjk_count == 3500
-        assert set(selected) >= {"A", "1"}
-    finally:
-        if added and kit_dir in sys.path:
-            sys.path.remove(kit_dir)

@@ -5,10 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from fastapi.testclient import TestClient
 
-from handwrite.api.app import create_app
-from handwrite.api.schemas import LayoutConfig, TableBorderStyle, TableConfig
-from handwrite.config import Settings
-from handwrite.docparse.docir import (
+from inkcraft.api.app import create_app
+from inkcraft.api.schemas import LayoutConfig, TableBorderStyle, TableConfig
+from inkcraft.config import Settings
+from inkcraft.docparse.docir import (
     BreakInline,
     DocBlock,
     DocIR,
@@ -18,15 +18,15 @@ from handwrite.docparse.docir import (
     TableData,
     TextInline,
 )
-from handwrite.docparse.markdown_codec import docir_to_markdown, markdown_to_docir
-from handwrite.docparse.pdf_paragraph import (
+from inkcraft.docparse.markdown_codec import docir_to_markdown, markdown_to_docir
+from inkcraft.docparse.pdf_paragraph import (
     PageTypographyProfile,
     RawPdfLine,
     reconstruct_page_paragraphs,
 )
-from handwrite.layout.composer import compose_document
-from handwrite.layout.table_renderer import render_table
-from handwrite.writers.registry import WriterRegistry
+from inkcraft.layout.composer import compose_document
+from inkcraft.layout.table_renderer import render_table
+from inkcraft.writers.registry import WriterRegistry
 
 ROOT = Path(__file__).resolve().parents[2]
 DEMO_FONT = ROOT / "fonts" / "lin_kaishu.hwfont"
@@ -48,7 +48,7 @@ def _get_reader():
 
 
 def test_table_renderer_all_seven_border_styles_and_compact_dimensions() -> None:
-    from handwrite.writers.selector import VariantSelector
+    from inkcraft.writers.selector import VariantSelector
 
     reader = _get_reader()
     assert reader is not None

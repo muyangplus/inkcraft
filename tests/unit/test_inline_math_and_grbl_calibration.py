@@ -9,26 +9,26 @@ from fastapi.testclient import TestClient
 import pymupdf as fitz
 import pytest
 
-from handwrite.api.app import create_app
-from handwrite.config import Settings
-from handwrite.api.schemas import LayoutConfig
-from handwrite.docparse.docir import BreakInline, DocBlock, DocIR, DocPageInfo, DocSource, MathInline, TextInline
-from handwrite.docparse.formula_ocr import (
+from inkcraft.api.app import create_app
+from inkcraft.config import Settings
+from inkcraft.api.schemas import LayoutConfig
+from inkcraft.docparse.docir import BreakInline, DocBlock, DocIR, DocPageInfo, DocSource, MathInline, TextInline
+from inkcraft.docparse.formula_ocr import (
     _OcrBox,
     _extract_symbol_table,
     _repair_latex_subscripts_with_context,
 )
-from handwrite.docparse.inline_math import (
+from inkcraft.docparse.inline_math import (
     build_text_with_scripts,
     is_symbol_def_block,
     normalize_symbol_def_leading_subscript,
     normalize_unambiguous_unit_powers,
 )
-from handwrite.docparse.pdf_parser import _extract_page_structure_pymupdf, parse_pdf
-from handwrite.layout.composer import compose_document
-from handwrite.layout.math_typesetter import typeset_math
-from handwrite.writers.registry import WriterRegistry
-from handwrite.writers.selector import VariantSelector
+from inkcraft.docparse.pdf_parser import _extract_page_structure_pymupdf, parse_pdf
+from inkcraft.layout.composer import compose_document
+from inkcraft.layout.math_typesetter import typeset_math
+from hwfont_sdk import HwFontReader
+from inkcraft.writers.selector import VariantSelector
 
 ROOT = Path(__file__).resolve().parents[2]
 SAMPLE_PDF = ROOT / "source" / "4-实验教学指导书.pdf"
@@ -153,12 +153,10 @@ def test_sample_pdf_subscript_and_chemical_extraction() -> None:
 
 
 def test_compact_chemical_handwriting_metrics() -> None:
-    hw_path = ROOT / "fonts" / "personal.hwfont"
+    hw_path = ROOT / "fonts" / "lin_kaishu.hwfont"
     if not hw_path.is_file():
-        pytest.skip("personal.hwfont not present")
-    reg = WriterRegistry(ROOT / "fonts")
-    reader = reg.get("personal")
-    assert reader is not None
+        pytest.skip("demo font not present")
+    reader = HwFontReader(hw_path)
     sel = VariantSelector(reader, fallback_policy="blank")
 
     ml_al = typeset_math(r"\mathrm{Al}_2(\mathrm{SO}_4)_3", sel, font_size_mm=6.0, display=False)
@@ -279,12 +277,10 @@ def test_symbol_def_leading_subscripts_merge_and_uniform_indent(tmp_path: Path) 
     assert any("热值" in b.plain_text() and "铁丝的长度" in b.plain_text() for b in sym_blocks)
 
     # 2. Verify EVERY physical row of `target_sym` is indented in Reflow composition (not flush-left)
-    hw_path = ROOT / "fonts" / "personal.hwfont"
+    hw_path = ROOT / "fonts" / "lin_kaishu.hwfont"
     if not hw_path.is_file():
-        pytest.skip("personal.hwfont not present")
-    reg = WriterRegistry(ROOT / "fonts")
-    reader = reg.get("personal")
-    assert reader is not None
+        pytest.skip("demo font not present")
+    reader = HwFontReader(hw_path)
     mini_doc = DocIR(
         doc_id="doc_sym_mini",
         source=DocSource(type="pdf", filename="sym.pdf", sha256="sym", parser="pymupdf"),
