@@ -1,5 +1,91 @@
 [
   {
+    "profile_id": "kx_grbl_stepper_z",
+    "name": "奎享兼容 · GRBL 步进Z轴写字机",
+    "port": "auto",
+    "baud": 115200,
+    "pen": {
+      "mode": "z",
+      "servo_up": "M5",
+      "servo_down": "M3 S90",
+      "dwell_ms": 0,
+      "down_delay_ms": 200,
+      "up_delay_ms": 200,
+      "z_up_mm": 0.0,
+      "z_down_mm": 2.0,
+      "z_feed": 3000.0,
+      "laser_power": 1000
+    },
+    "workspace_mm": { "x": 210.0, "y": 297.0 },
+    "pen_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "paper_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "origin": "top_left",
+    "x_axis": "right",
+    "y_axis": "up",
+    "swap_xy": false,
+    "invert_x": false,
+    "invert_y": false,
+    "offset_mm": { "x": 0.0, "y": 0.0 },
+    "rotation_deg": 0.0,
+    "feed_draw": 1500.0,
+    "feed_travel": 3000.0,
+    "jog_feed": 2500.0,
+    "z_jog_step_mm": 1.0,
+    "status_hz": 10.0,
+    "rx_buffer": 128,
+    "stream_mode": "char_count",
+    "auto_zero_on_start": true,
+    "sleep_after_job": false,
+    "legacy_grbl": false,
+    "start_gcode": "",
+    "end_gcode": "",
+    "macros": [],
+    "grbl_expected": {}
+  },
+  {
+    "profile_id": "kx_grbl_laser",
+    "name": "奎享兼容 · GRBL 激光/PWM 笔控",
+    "port": "auto",
+    "baud": 115200,
+    "pen": {
+      "mode": "laser",
+      "servo_up": "M5",
+      "servo_down": "M3 S1000",
+      "dwell_ms": 0,
+      "down_delay_ms": 200,
+      "up_delay_ms": 200,
+      "z_up_mm": 0.0,
+      "z_down_mm": 0.0,
+      "z_feed": 3000.0,
+      "laser_power": 1000
+    },
+    "workspace_mm": { "x": 210.0, "y": 297.0 },
+    "pen_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "paper_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "origin": "top_left",
+    "x_axis": "right",
+    "y_axis": "up",
+    "swap_xy": false,
+    "invert_x": false,
+    "invert_y": false,
+    "offset_mm": { "x": 0.0, "y": 0.0 },
+    "rotation_deg": 0.0,
+    "feed_draw": 1500.0,
+    "feed_travel": 3000.0,
+    "jog_feed": 2500.0,
+    "z_jog_step_mm": 1.0,
+    "status_hz": 10.0,
+    "rx_buffer": 128,
+    "stream_mode": "char_count",
+    "auto_zero_on_start": true,
+    "sleep_after_job": false,
+    "legacy_grbl": false,
+    "start_gcode": "",
+    "end_gcode": "",
+    "macros": [],
+    "grbl_expected": {}
+  },
+  {
     "profile_id": "corexy_servo_a4",
     "name": "CoreXY A4 舵机写字机 (GRBL 1.1)",
     "baud": 115200,
@@ -12,9 +98,18 @@
       "z_down_mm": 0.0,
       "z_feed": 1200.0
     },
-    "workspace_mm": { "x": 220.0, "y": 310.0 },
-    "pen_change_pos_mm": { "x": 10.0, "y": 10.0 },
-    "paper_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "workspace_mm": {
+      "x": 220.0,
+      "y": 310.0
+    },
+    "pen_change_pos_mm": {
+      "x": 10.0,
+      "y": 10.0
+    },
+    "paper_change_pos_mm": {
+      "x": 0.0,
+      "y": 0.0
+    },
     "origin": "top_left",
     "invert_x": false,
     "invert_y": false,
@@ -37,9 +132,18 @@
       "z_down_mm": 0.0,
       "z_feed": 1200.0
     },
-    "workspace_mm": { "x": 310.0, "y": 430.0 },
-    "pen_change_pos_mm": { "x": 15.0, "y": 15.0 },
-    "paper_change_pos_mm": { "x": 0.0, "y": 0.0 },
+    "workspace_mm": {
+      "x": 310.0,
+      "y": 430.0
+    },
+    "pen_change_pos_mm": {
+      "x": 15.0,
+      "y": 15.0
+    },
+    "paper_change_pos_mm": {
+      "x": 0.0,
+      "y": 0.0
+    },
     "origin": "top_left",
     "invert_x": false,
     "invert_y": false,

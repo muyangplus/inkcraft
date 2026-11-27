@@ -6,7 +6,7 @@
 
 ## 一、快速上手（两步完成）
 
-1. **解压到纯英文或常规本地目录**（如 `D:\handwrite\`）。
+1. **解压到纯英文或常规本地目录**（如 `D:\inkcraft\`）。
 2. **首次安装环境**：双击根目录 **`安装Windows环境.bat`**
    - 自动安装 `uv` 与独立 **Python 3.12**；
    - 创建 Windows 专属 `.venv` 并安装 FastAPI、PyMuPDF、python-docx、Shapely、PySerial 等全部依赖（默认已启用清华 PyPI 镜像加速）；

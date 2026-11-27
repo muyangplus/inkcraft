@@ -25,7 +25,7 @@ Write-Host "  正在启动 墨迹工坊 (Handwrite Studio)..." -ForegroundColor 
 Write-Host "  关闭本窗口即可停止服务" -ForegroundColor DarkGray
 Write-Host "============================================================" -ForegroundColor Cyan
 
-$runArgs = @("-m", "handwrite", "--host", $BindHost, "--port", "$Port", "--auto-port")
+$runArgs = @("-m", "inkcraft", "--host", $BindHost, "--port", "$Port", "--auto-port")
 if (-not $NoBrowser) {
     $runArgs += "--open-browser"
 }

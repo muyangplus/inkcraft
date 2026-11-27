@@ -5,6 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hwbuilder"
 version = "1.0.0"
+license = { text = "Apache-2.0" }
+authors = [{ name = "muyangplus" }]
 description = "Google Colab offline-to-online scan segmentation & few-shot AI .hwfont builder."
 requires-python = ">=3.11"
 dependencies = ["hwfont-sdk", "numpy>=1.26", "pillow>=10.0"]

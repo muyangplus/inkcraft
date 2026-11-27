@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Package a clean, portable Windows release bundle (`dist/handwrite-windows-portable.zip`)."""
+"""Package a clean, portable Windows release bundle (`dist/inkcraft-windows-portable.zip`)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_ZIP = ROOT / "dist" / "handwrite-windows-portable.zip"
+OUT_ZIP = ROOT / "dist" / "inkcraft-windows-portable.zip"
 
 EXCLUDE_TOP_LEVEL_DIRS = {
     "data",
@@ -60,9 +60,9 @@ def build_bundle() -> Path:
             if not should_include(file_path):
                 continue
             rel = file_path.relative_to(ROOT)
-            arcname = f"handwrite-windows/{rel.as_posix()}"
+            arcname = f"inkcraft-windows/{rel.as_posix()}"
             zf.write(file_path, arcname)
-            if arcname == "handwrite-windows/frontend/dist/index.html":
+            if arcname == "inkcraft-windows/frontend/dist/index.html":
                 wrote_dist_index = True
             count += 1
 

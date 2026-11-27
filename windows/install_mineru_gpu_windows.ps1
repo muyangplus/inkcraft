@@ -55,7 +55,7 @@ $envLines = @(
     "MINERU_CHUNK_PAGES=10",
     "MINERU_MAX_DPI=200",
     "MINERU_BIN=$mineruExe",
-    "HANDWRITE_MINERU_PYTHON=$mineruPy"
+    "INKCRAFT_MINERU_PYTHON=$mineruPy"
 )
 Set-Content -Path $envFile -Value ($envLines -join "`r`n") -Encoding UTF8
 

@@ -21,12 +21,11 @@ runtime/
 .env
 config/mineru.env
 
-# Third-party proprietary software & licence files (never commit)
-source/奎享雕刻/
-source/*.pdf
+# Local source material: third-party software, licence files, handwriting scans
+# and their transcriptions (source/scans/specs.json). Never committed.
+source/
 
 # Personal handwriting scans and models derived from them
-source/scans/
 fonts/*.hwfont
 !fonts/lin_kaishu.hwfont
 !fonts/chen_xingshu.hwfont

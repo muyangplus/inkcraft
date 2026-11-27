@@ -80,10 +80,10 @@ if ($UseChinaMirror) {
 }
 & uv @pipArgs
 
-# 4. Write workspace .pth so `python -m handwrite` & `python -m hwbuilder` work everywhere
+# 4. Write workspace .pth so `python -m inkcraft` & `python -m hwbuilder` work everywhere
 Write-Host "`n[4/5] 正在注册本地工作区包 (hwfont_sdk / backend / colab_builder)..." -ForegroundColor Cyan
 $sitePackages = Join-Path $venvDir "Lib\site-packages"
-$pthFile = Join-Path $sitePackages "handwrite_workspace.pth"
+$pthFile = Join-Path $sitePackages "inkcraft_workspace.pth"
 $pthContent = @(
     (Join-Path $Root "packages\hwfont_sdk"),
     (Join-Path $Root "backend"),
@@ -118,11 +118,11 @@ if ($RebuildFrontend -or (-not (Test-Path $distIndex))) {
 Write-Host "`n[5/5] 正在执行 Windows 环境自检..." -ForegroundColor Cyan
 & $venvPy -c @"
 import sys, serial, fitz, docx, shapely, fastapi, uvicorn
-import hwfont_sdk, handwrite, hwbuilder
+import hwfont_sdk, inkcraft, hwbuilder
 from hwbuilder.local_runner import probe_capabilities
 caps = probe_capabilities()
 print('[OK] Python:', sys.version.split()[0])
-print('[OK] Core modules loaded: hwfont_sdk, handwrite, hwbuilder, pyserial, pymupdf, shapely')
+print('[OK] Core modules loaded: hwfont_sdk, inkcraft, hwbuilder, pyserial, pymupdf, shapely')
 print('[OK] GPU Probe:', caps.get('gpu_name') or 'CPU mode', 'VRAM(MB):', caps.get('vram_mb'))
 "@
 

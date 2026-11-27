@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "packages" / "hwfont_sdk"))
 sys.path.insert(0, str(ROOT / "backend"))
 
-from handwrite.writers.fallback.hershey import BUILTIN_GLYPHS  # noqa: E402
+from inkcraft.writers.fallback.hershey import BUILTIN_GLYPHS  # noqa: E402
 from hwfont_sdk import HwFontMeta, HwFontReader, HwFontWriter  # noqa: E402
 
 

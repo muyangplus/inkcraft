@@ -22,7 +22,7 @@ for rel in ("packages/hwfont_sdk", "backend"):
 
 
 def export_openapi(out_path: Path, *, check: bool = False) -> int:
-    from handwrite.api.app import create_app  # type: ignore[import-not-found]
+    from inkcraft.api.app import create_app  # type: ignore[import-not-found]
 
     app = create_app()
     schema = app.openapi()
